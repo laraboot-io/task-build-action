@@ -2,14 +2,9 @@
 
 A laraboot task packer.
 
-
 - Preface
-- Motivation
+- Usage
 
-## Usage
-```bash
-# Pending
-```
 ## Preface
 
 ```bash
@@ -47,4 +42,9 @@ A laraboot task packer.
 # 
 # And they all made of ticky tacky
 # And they all look all the same.
+```
+
+## Usage
+```bash
+# Pending
 ```
