@@ -14,9 +14,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-
+      - run: |
+          echo ${{ secrets.CR_PAT }} | docker login ghcr.io -u USERNAME --password-stdin
       - name: Setup build tools
-        id: build-actions
+        id: build-actionsg
         uses: ./ # Uses an action
         with:
           arg0: 'Mona the Octocat'
