@@ -1,0 +1,16 @@
+# action.yml
+name: 'TaskBuildAction'
+description: 'Packs a laraboot task script using Packit'
+inputs:
+  arg0: # id of input
+    description: 'arg0'
+    required: true
+    default: 'default'
+outputs:
+  time: # id of output
+    description: 'Build time'
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+  args:
+    - ${{ inputs.arg0 }}
