@@ -7,6 +7,5 @@ echo "Arg0?:= $1"
 time=$(date)
 echo "::set-output name=time::$time"
 
-if [ -f ./scripts/main.sh ]; then
-  ./scripts/main.sh
-fi
+chmod +x ./scripts/main.sh
+./scripts/main.sh

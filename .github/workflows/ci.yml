@@ -22,6 +22,7 @@ jobs:
           password: ${{ secrets.CR_PAT }}
       - run: |
           docker build -t task-builder .
+          chmod -R +x ./scripts
       - name: Setup build tools
         id: build-actions
         uses: ./ # Uses an action
