@@ -15,7 +15,8 @@ RUN apk add --no-cache gcc musl-dev && \
 RUN wget -4 https://github.com/paketo-buildpacks/packit/releases/download/v0.8.0/jam-linux -O /usr/bin/jam && \
     chmod +x /usr/bin/jam
 RUN chmod +x entrypoint.sh && \
-    chmod -R +x ./scripts && \
+    chmod +x ./scripts/build.sh && \
+    chmod +x ./scripts/main.sh && \
     mkdir -p dist/bin
 VOLUME /src
 ENTRYPOINT ["/src/entrypoint.sh"]
