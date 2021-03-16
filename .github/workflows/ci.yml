@@ -21,10 +21,4 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.CR_PAT }}
       - run: |
-          docker login -u ${{ github.repository_owner }} -p ${{ secrets.CR_PAT }} docker.pkg.github.com
-          docker pull docker.pkg.github.com/laraboot-io/task-build-action/task-build-action:latest
-      - name: Setup build tools
-        id: build-actionsg
-        uses: ./ # Uses an action
-        with:
-          arg0: 'Mona the Octocat'
+          docker build -t task-builder .
