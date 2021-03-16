@@ -22,3 +22,8 @@ jobs:
           password: ${{ secrets.CR_PAT }}
       - run: |
           docker build -t task-builder .
+      - name: Setup build tools
+        id: build-actions
+        uses: ./ # Uses an action
+        with:
+          arg0: 'Mona the Octocat'
