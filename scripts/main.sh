@@ -6,7 +6,10 @@ set -o pipefail
 readonly PROGDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 readonly PROJECT_DIR="$(cd "${PROGDIR}/.." && pwd)"
 
-source ./build.sh
+echo "PROGDIR=$PROGDIR"
+echo "PROJECT_DIR=$PROJECT_DIR"
+
+source $PROGDIR/build.sh
 
 function main() {
   while [[ "${#}" != 0 ]]; do
