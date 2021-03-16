@@ -20,6 +20,8 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.CR_PAT }}
+      - run: |
+        docker pull docker.pkg.github.com/laraboot-io/task-build-action/task-build-action:latest
       - name: Setup build tools
         id: build-actionsg
         uses: ./ # Uses an action
