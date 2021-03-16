@@ -9,9 +9,7 @@ RUN apk add bash jq yq curl && \
     wget -4 https://github.com/mikefarah/yq/releases/download/v4.2.0/yq_linux_amd64 -O /usr/bin/yq && \
     chmod +x /usr/bin/yq && \
     (curl -sSL "https://github.com/buildpacks/pack/releases/download/v0.17.0/pack-v0.17.0-linux.tgz" | tar -C /usr/local/bin/ --no-same-owner -xzv pack)
-RUN apk add --no-cache gcc musl-dev && \
-    apk add --no-cache rust cargo && \
-    cargo install toml-cli
+RUN apk add --no-cache gcc musl-dev
 RUN wget -4 https://github.com/paketo-buildpacks/packit/releases/download/v0.8.0/jam-linux -O /usr/bin/jam && \
     chmod +x /usr/bin/jam
 RUN chmod +x entrypoint.sh && \
