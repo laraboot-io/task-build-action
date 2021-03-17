@@ -112,9 +112,10 @@ api = "0.5"
 
 # Buildpack ID and metadata
 [buildpack]
-id = "user/$pkg_name"
+id = "io.laraboot.user.$pkg_name"
 version = "$pkg_version"
 name = "$pkg_name"
+homepage = "https://laraboot.io/tasks/user/$pkg_name"
 
 [metadata]
   include-files = ["bin/build", "bin/detect", "buildpack.toml"]
