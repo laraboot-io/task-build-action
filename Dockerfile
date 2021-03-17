@@ -15,7 +15,7 @@ RUN wget -4 https://github.com/paketo-buildpacks/packit/releases/download/v0.8.0
 RUN chmod +x entrypoint.sh && \
     chmod +x ./scripts/build.sh && \
     chmod +x ./scripts/main.sh && \
-    mkdir -p dist/bin
+    mkdir -p dist/bin && \
     mkdir -p /app/task
 VOLUME /src
 WORKDIR /app/task
