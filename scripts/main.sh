@@ -204,10 +204,10 @@ function cmd::go_test() {
   #smoke test
   pack build tmp-app \
   --path . \
-  --buildpack gcr.io/paketo-buildpacks/php-dist \
   --buildpack docker://$name \
   --builder paketobuildpacks/builder:full \
-  --clear-cache
+  --clear-cache \
+  --verbose
 }
 
 function cmd::go_export() {
