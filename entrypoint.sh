@@ -19,6 +19,7 @@ readonly pkg_version=$(echo $json_task | jq -rc '.version')
 readonly run_content=$(echo $json_task | jq -rc '.run')
 readonly script_file=./bin/user_build_script
 
+mkdir -p bin
 mkdir -p dist
 mkdir -p tmp
 
