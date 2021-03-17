@@ -33,9 +33,9 @@ jobs:
                 pushd $d
                 echo "$d"
                 docker run \
-                  -e BUILDER_WORKBENCH=/app/task \
+                  -e BUILDER_WORKBENCH=/github/workspace \
                   -v "/var/run/docker.sock":"/var/run/docker.sock" \
-                  -v `pwd`:/app/task \
+                  -v `pwd`:/github/workspace \
                   -i task-builder \
                   arg0 .
                   # clean up
