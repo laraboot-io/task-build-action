@@ -1,0 +1,8 @@
+{
+  "dependencies": [
+    {
+      "name": "php",
+      "version": "7.4.*"
+    }
+  ]
+}

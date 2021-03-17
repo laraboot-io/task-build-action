@@ -6,6 +6,10 @@ inputs:
     description: 'arg0'
     required: true
     default: 'default'
+  directory:
+    description: 'The directory where the task is'
+    required: false
+    default: './'
 outputs:
   time: # id of output
     description: 'Build time'
@@ -14,3 +18,4 @@ runs:
   image: 'Dockerfile'
   args:
     - ${{ inputs.arg0 }}
+    - ${{ inputs.directory }}

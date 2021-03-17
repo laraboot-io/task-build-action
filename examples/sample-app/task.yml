@@ -1,0 +1,19 @@
+# task.yml
+version: "0.0.2"
+name: 'MyTask'
+description: 'No ops task'
+requires:
+  php : 7.4.*
+  nodejs: 12.x
+inputs:
+  app-name:  # id of input
+    description: 'application name'
+    required: true
+    default: 'Laraboot'
+outputs:
+  time: # id of output
+    description: 'The time we greeted you'
+run: |
+  printenv
+  echo "No ops;"
+  php index.php

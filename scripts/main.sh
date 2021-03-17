@@ -3,10 +3,18 @@
 set -eu
 set -o pipefail
 
-readonly PROGDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-readonly PROJECT_DIR="$(cd "${PROGDIR}/.." && pwd)"
+# scripts
+readonly THIS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# ../
+readonly GO_PROJECT_DIR="$(cd "${THIS_DIR}/.." && pwd)"
 
-source ./build.sh
+# temporal directory for temporal things
+# located inside workbench for observability
+# could be replaced for any /tmp folder
+readonly WORDLY_PLACE="${BUILDER_WORKBENCH}/tmp"
+
+echo "THIS_DIR=$THIS_DIR"
+echo "GO_PROJECT_DIR=$GO_PROJECT_DIR"
 
 function main() {
   while [[ "${#}" != 0 ]]; do
@@ -33,14 +41,14 @@ function main() {
   # We need jq also
   jq --version
 
-  echo "----> PROJECT_DIR=$PROJECT_DIR"
+  echo "----> GO_PROJECT_DIR=$GO_PROJECT_DIR"
+  echo "----> CWD=$(pwd)"
 
-  readonly json_task=$(yq eval -j -I=0 task.yml)
-  readonly package_toml=$PROJECT_DIR/dist/package.toml
+  readonly json_task=$(yq eval -j -I=0 ./task.yml)
+  # this file will be created
+  readonly package_toml=$WORDLY_PLACE/package.toml
   readonly pkg_name=$(echo $json_task | jq -rc '.name')
   readonly pkg_version=$(echo $json_task | jq -rc '.version')
-
-  readonly req_php_version=$(echo $json_task | jq -rc '.requires.php')
 
   #grab action run
   readonly run_content=$(echo $json_task | jq -rc '.run')
@@ -49,13 +57,16 @@ function main() {
   echo "----> pkg_version=$pkg_version"
 
   # Prep work
-  mkdir -p $PROJECT_DIR/dist
+  mkdir -p $WORDLY_PLACE
 
-  cmd::copy_task
+  #  cmd::copy_task
   cmd::create_buildpack_file
   cmd::package
   cmd::build
-  cmd::build_binaries
+  cmd::go_generate
+  cmd::go_build
+  cmd::go_export
+  cmd::go_package
 }
 
 function usage() {
@@ -69,30 +80,30 @@ OPTIONS
 USAGE
 }
 
-function cmd::copy_task() {
-  echo "----> copy_task"
-  cat <<EOF >$PROJECT_DIR/dist/task.json
-{
-  "dependencies": [
-    {
-      "name": "php",
-      "version": "$req_php_version"
-    }
-  ]
-}
-EOF
-
-  # @todo get a way around this. The process shouldn't include additional files
-  # into the project
-  cp $PROJECT_DIR/dist/task.json $PROJECT_DIR/sample-app/task.json
-
-}
+#function cmd::copy_task() {
+#  echo "----> copy_task"
+#  cat <<EOF >$WORDLY_PLACE/task.json
+#{
+#  "dependencies": [
+#    {
+#      "name": "php",
+#      "version": "$req_php_version"
+#    }
+#  ]
+#}
+#EOF
+#
+#  # @todo get a way around this. The process shouldn't include additional files
+#  # into the project
+#  cp $WORDLY_PLACE/task.json $GO_PROJECT_DIR/sample-app/task.json
+#
+#}
 
 function cmd::create_buildpack_file() {
 
   echo "----> create_buildpack_file"
 
-  cat <<EOF >$PROJECT_DIR/dist/buildpack.toml
+  cat <<EOF >$WORDLY_PLACE/buildpack.toml
 # Buildpack API version
 api = "0.5"
 
@@ -118,38 +129,13 @@ EOF
 
 }
 
-function cmd::build_binaries() {
-  echo "----> build_binaries"
-  # test & package commands require docker privileges
-  cmd::go_pkg_assets
-  cmd::go_generate
-  cmd::go_build
-  cmd::go_export
-  cmd::go_package
-  #  cmd::go_test
-  #  pushd $PROJECT_DIR/concealer
-  #  ls -ltah
-  #  GOOS=linux go build -ldflags "-X 'main.TaskName=MyTask' -s -w" -o ./bin/detect ./cmd/detect/main.go &&
-  #    GOOS=linux go build -ldflags "-s -w" -o ./bin/build ./cmd/build/main.go &&
-  #    chmod +x ./bin/detect &&
-  #    chmod +x ./bin/build &&
-  #    pack config default-builder paketobuildpacks/builder:full &&
-  #    pack buildpack package my-task --config ./package.toml &&
-  #    pack build tmp-app \
-  #      --path ../sample-app \
-  #      --buildpack gcr.io/paketo-buildpacks/php-dist \
-  #      --buildpack docker://my-task \
-  #      --clear-cache --verbose
-  #  popd
-}
-
 function cmd::build() {
 
   : ${IMAGE_TAG:=dev}
 
-  readonly script_file="$PROJECT_DIR/dist/bin/user_build_script"
+  readonly script_file="$WORDLY_PLACE/bin/user_build_script"
 
-  mkdir -p $PROJECT_DIR/dist/bin
+  mkdir -p $WORDLY_PLACE/bin
 
   cat <<EOF >$script_file
 #!/usr/bin/env bash
@@ -161,6 +147,81 @@ EOF
 
   chmod +x $script_file
 
+}
+
+function cmd::go_pkg_assets() {
+  echo "----> ----> packaging assets"
+  # Clean up assets
+  rm -rf $GO_PROJECT_DIR/assets/
+  # Copy all bin-dist files into assets folder
+  #  cp -r $BUILDER_WORKBENCH/dist/bin $GO_PROJECT_DIR/assets/
+  #  ls -ltah $GO_PROJECT_DIR/assets/
+  pushd $GO_PROJECT_DIR >/dev/null
+  #  readonly cwd=$(pwd)
+  #  echo "cwd=$cwd"
+  # Package assets
+  pkger
+  pkger list
+  GOOS=linux go build -ldflags="-s -w" -o ./bin/pack ./cmd/pack/main.go
+  #smoke test
+  #  ./bin/user_script
+  popd >/dev/null
+}
+
+function cmd::go_generate() {
+  echo "----> ----> go_generate"
+  pushd $GO_PROJECT_DIR >/dev/null
+  go generate
+  popd >/dev/null
+}
+
+function cmd::go_build() {
+
+  echo "----> ----> go build"
+
+  readonly name="my-task"
+
+  #  cp -r $BUILDER_WORKBENCH/dist/* $GO_PROJECT_DIR
+  pushd $GO_PROJECT_DIR >/dev/null
+  GOOS=linux go build -ldflags "-X 'main.TaskName=${name}' -s -w" -o ./bin/detect ./cmd/detect/main.go
+  GOOS=linux go build -ldflags="-s -w" -o ./bin/build ./cmd/build/main.go
+  chmod -R +x ./bin
+  popd >/dev/null
+
+}
+
+function cmd::go_test() {
+  echo "----> ----> go_test"
+  #smoke test
+  pack build tmp-app \
+  --path $BUILDER_WORKBENCH/sample-app \
+  --buildpack gcr.io/paketo-buildpacks/php-dist \
+  --buildpack docker://$name \
+  --builder paketobuildpacks/builder:full \
+  --clear-cache
+}
+
+function cmd::go_export() {
+  echo "----> ----> go_export"
+  mkdir -p $BUILDER_WORKBENCH/dist/task/bin &&
+    cp -r $WORDLY_PLACE/*.toml $BUILDER_WORKBENCH/dist/task &&
+    cp -r $WORDLY_PLACE/bin/* $BUILDER_WORKBENCH/dist/task/bin
+}
+
+function cmd::go_package() {
+  echo "----> ----> go_package"
+  pushd $BUILDER_WORKBENCH/dist/task >/dev/null
+  # pack as docker image
+  pack buildpack package $name --config ./package.toml
+  # pack as file
+  pack buildpack package $BUILDER_WORKBENCH/dist/$name.cnb --config ./package.toml --format file
+  #  jam && jam pack \
+  #    --buildpack ./buildpack.toml \
+  #    --stack io.paketo.stacks.tiny \
+  #    --version 1.2.3 \
+  #    --offline \
+  #    --output .$BUILDER_WORKBENCH/dist/buildpack.tgz
+  popd >/dev/null
 }
 
 [[ ${BASH_SOURCE[0]} == $0 ]] && main "$@"

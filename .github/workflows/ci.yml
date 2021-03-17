@@ -11,6 +11,10 @@ jobs:
   integration:
     name: Build Tests
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        app:
+          - sample-app
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -21,10 +25,29 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.CR_PAT }}
       - run: |
-          docker login -u ${{ github.repository_owner }} -p ${{ secrets.CR_PAT }} docker.pkg.github.com
-          docker pull docker.pkg.github.com/laraboot-io/task-build-action/task-build-action:latest
+          chmod -R +x ./scripts
+          docker build -t task-builder .
+          pushd examples
+            for d in */ ; do
+              if [ -d "$d" ]; then
+                pushd $d
+                echo "$d"
+                docker run \
+                  -e BUILDER_WORKBENCH=/app/task \
+                  -v "/var/run/docker.sock":"/var/run/docker.sock" \
+                  -v `pwd`:/app/task \
+                  -i task-builder \
+                  arg0 .
+                  # clean up
+                  sudo rm -rf dist
+                popd
+              fi
+            done
+          popd
+
       - name: Setup build tools
-        id: build-actionsg
+        id: build-actions
         uses: ./ # Uses an action
         with:
-          arg0: 'Mona the Octocat'
+          arg0: 'arg0'
+          directory: ./examples/${{ matrix.app }}
