@@ -4,8 +4,14 @@ set -eu
 set -o pipefail
 
 echo "Arg0?:= $1"
-time=$(date)
-echo "::set-output name=time::$time"
+echo "directory?:= $2"
 
-chmod +x ./scripts/main.sh
-./scripts/main.sh
+readonly task_directory="$2"
+
+#time=$(date)
+#echo "::set-output name=time::$time"
+
+chmod +x /src/scripts/main.sh
+pushd $task_directory
+/src/scripts/main.sh
+popd >/dev
