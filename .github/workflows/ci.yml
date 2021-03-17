@@ -38,6 +38,8 @@ jobs:
                   -v `pwd`:/app/task \
                   -i task-builder \
                   arg0 .
+                  # clean up
+                  rm -rf dist
                 popd
               fi
             done
@@ -47,5 +49,5 @@ jobs:
         id: build-actions
         uses: ./ # Uses an action
         with:
-          arg0: 'Mona the Octocat'
+          arg0: 'arg0'
           directory: ./examples/${{ matrix.app }}
