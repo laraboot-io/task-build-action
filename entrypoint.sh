@@ -3,8 +3,7 @@
 set -eu
 set -o pipefail
 
-echo "Arg0?:= $1"
-echo "directory?:= $2"
+echo "args = $*"
 
 time=$(date)
 echo "::set-output name=time::$time"

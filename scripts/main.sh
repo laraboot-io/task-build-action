@@ -129,28 +129,6 @@ EOF
 
 }
 
-function cmd::build_binaries() {
-  echo "----> build_binaries"
-  # test & package commands require docker privileges
-  #  cmd::go_pkg_assets
-
-  #  cmd::go_test
-  #  pushd $GO_PROJECT_DIR/concealer
-  #  ls -ltah
-  #  GOOS=linux go build -ldflags "-X 'main.TaskName=MyTask' -s -w" -o ./bin/detect ./cmd/detect/main.go &&
-  #    GOOS=linux go build -ldflags "-s -w" -o ./bin/build ./cmd/build/main.go &&
-  #    chmod +x ./bin/detect &&
-  #    chmod +x ./bin/build &&
-  #    pack config default-builder paketobuildpacks/builder:full &&
-  #    pack buildpack package my-task --config ./package.toml &&
-  #    pack build tmp-app \
-  #      --path ../sample-app \
-  #      --buildpack gcr.io/paketo-buildpacks/php-dist \
-  #      --buildpack docker://my-task \
-  #      --clear-cache --verbose
-  #  popd
-}
-
 function cmd::build() {
 
   : ${IMAGE_TAG:=dev}
@@ -224,12 +202,14 @@ function cmd::go_test() {
 }
 
 function cmd::go_export() {
+  echo "----> ----> go_export"
   mkdir -p $BUILDER_WORKBENCH/dist/task/bin &&
     cp -r $WORDLY_PLACE/*.toml $BUILDER_WORKBENCH/dist/task &&
     cp -r $WORDLY_PLACE/bin/* $BUILDER_WORKBENCH/dist/task/bin
 }
 
 function cmd::go_package() {
+  echo "----> ----> go_package"
   pushd $BUILDER_WORKBENCH/dist/task >/dev/null
   # pack as docker image
   pack buildpack package $name --config ./package.toml
