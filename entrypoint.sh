@@ -9,7 +9,6 @@ time=$(date)
 echo "::set-output name=time::$time"
 
 readonly task_directory="$2"
-readonly WORDLY_PLACE=$(mktemp -d)
 
 # 1)
 # Step name: input-gather
@@ -90,11 +89,3 @@ cp -r $BUILDER_HOME/bin/* ./bin
 chmod -R +x ./bin
 pack buildpack package my-task --config package.toml
 popd
-
-#cp -r $WORDLY_PLACE/*.toml $BUILDER_WORKBENCH/dist/task &&
-#cp -r $WORDLY_PLACE/bin/* $BUILDER_WORKBENCH/dist/task/bin &&
-#cp -r $GO_PROJECT_DIR/bin/* $BUILDER_WORKBENCH/dist/task/bin
-
-#pwd
-#ls -ltah
-#$BUILDER_HOME/scripts/main.sh
