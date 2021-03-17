@@ -63,7 +63,7 @@ function cmd::go_pkg_assets() {
   # Package assets
   pkger
   pkger list
-  #  GOOS=linux go build -ldflags="-s -w" -o ./bin/pack ./cmd/pack/main.go
+  GOOS=linux go build -ldflags="-s -w" -o ./bin/pack ./cmd/pack/main.go
   #smoke test
   #  ./bin/user_script
   popd >/dev/null
