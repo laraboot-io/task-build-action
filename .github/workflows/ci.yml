@@ -50,7 +50,7 @@ jobs:
                   -i task-builder \
                   arg0 .
                   ls -ltah
-                  pusdh $root_path
+                  pushd $root_path
                   GOOS=linux go build -tags netgo -a -v -ldflags "-X 'main.TaskName=MyTask' -s -w" -o ./bin/detect ./cmd/detect/main.go && \
                   GOOS=linux go build -tags netgo -a -v -ldflags "-s -w" -o ./bin/build ./cmd/build/main.go
                   popd
