@@ -67,6 +67,7 @@ function main() {
   cmd::go_build
   cmd::go_export
   cmd::go_package
+  cmd::go_test
 
   rm -rf $WORDLY_PLACE
 }
@@ -194,9 +195,10 @@ function cmd::go_build() {
 
 function cmd::go_test() {
   echo "----> ----> go_test"
+  echo "pwd=$(pwd)"
   #smoke test
   pack build tmp-app \
-  --path $BUILDER_WORKBENCH/sample-app \
+  --path . \
   --buildpack gcr.io/paketo-buildpacks/php-dist \
   --buildpack docker://$name \
   --builder paketobuildpacks/builder:full \
