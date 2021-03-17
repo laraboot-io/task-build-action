@@ -55,15 +55,15 @@ function cmd::go_pkg_assets() {
   # Clean up assets
   rm -rf $GO_PROJECT_DIR/assets/
   # Copy all bin-dist files into assets folder
-  cp -r $BUILDER_WORKBENCH/dist/bin $GO_PROJECT_DIR/assets/
+  #  cp -r $BUILDER_WORKBENCH/dist/bin $GO_PROJECT_DIR/assets/
   #  ls -ltah $GO_PROJECT_DIR/assets/
   pushd $GO_PROJECT_DIR >/dev/null
-  readonly cwd=$(pwd)
+  #  readonly cwd=$(pwd)
   #  echo "cwd=$cwd"
   # Package assets
   pkger
   pkger list
-  GOOS=linux go build -ldflags="-s -w" -o ./bin/pack ./cmd/pack/main.go
+  #  GOOS=linux go build -ldflags="-s -w" -o ./bin/pack ./cmd/pack/main.go
   #smoke test
   #  ./bin/user_script
   popd >/dev/null
