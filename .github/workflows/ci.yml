@@ -44,6 +44,7 @@ jobs:
                   arg0 .
                   # debug
                   docker images
+                  docker run -i my-task ls -ltah
                   pack build check-app \
                   --path . \
                   --buildpack gcr.io/paketo-buildpacks/php-dist \
