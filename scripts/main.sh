@@ -126,6 +126,7 @@ function cmd::build_binaries() {
   echo "----> build_binaries"
   # test & package commands require docker privileges
   #  cmd::go_pkg_assets
+
   cmd::go_generate
   cmd::go_build
   cmd::go_export
