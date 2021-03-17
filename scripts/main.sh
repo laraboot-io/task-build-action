@@ -67,6 +67,8 @@ function main() {
   cmd::go_build
   cmd::go_export
   cmd::go_package
+
+  rm -rf $WORDLY_PLACE
 }
 
 function usage() {
