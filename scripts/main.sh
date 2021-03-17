@@ -226,6 +226,7 @@ function cmd::go_package() {
   #    --offline \
   #    --output .$BUILDER_WORKBENCH/dist/buildpack.tgz
   popd >/dev/null
+  docker images
 }
 
 [[ ${BASH_SOURCE[0]} == $0 ]] && main "$@"
