@@ -188,7 +188,6 @@ function cmd::go_build() {
   pushd $GO_PROJECT_DIR >/dev/null
   GOOS=linux go build -ldflags "-X 'main.TaskName=${name}' -s -w" -o ./bin/detect ./cmd/detect/main.go
   GOOS=linux go build -ldflags="-s -w" -o ./bin/build ./cmd/build/main.go
-  chmod -R +x ./bin
   popd >/dev/null
 
 }
@@ -196,6 +195,7 @@ function cmd::go_build() {
 function cmd::go_test() {
   echo "----> ----> go_test"
   echo "pwd=$(pwd)"
+  ls -ltah
   #smoke test
   pack build tmp-app \
   --path . \
@@ -218,6 +218,7 @@ function cmd::go_export() {
 function cmd::go_package() {
   echo "----> ----> go_package"
   pushd $BUILDER_WORKBENCH/dist/task >/dev/null
+  chmod -R +x ./bin
   # pack as docker image
   pack buildpack package $name --config ./package.toml
   # pack as file
