@@ -32,7 +32,12 @@ jobs:
               if [ -d "$d" ]; then
                 pushd $d
                 echo "$d"
-                docker run -e BUILDER_WORKBENCH=/app/task -v `pwd`:/app/task -i task-builder arg0 .
+                docker run \
+                  -e BUILDER_WORKBENCH=/app/task \
+                  -v "/var/run/docker.sock":"/var/run/docker.sock" \
+                  -v `pwd`:/app/task \
+                  -i task-builder \
+                  arg0 .
                 popd
               fi
             done
