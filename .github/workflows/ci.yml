@@ -39,7 +39,7 @@ jobs:
                   -i task-builder \
                   arg0 .
                   # clean up
-                  rm -rf dist
+                  sudo rm -rf dist
                 popd
               fi
             done
