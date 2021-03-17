@@ -33,6 +33,7 @@ jobs:
                 pushd $d
                 echo "$d"
                 docker run \
+                  -e BUILDER_WORKBENCH=/github/workspace \
                   -v "/var/run/docker.sock":"/var/run/docker.sock" \
                   -v `pwd`:/github/workspace \
                   -i task-builder \
