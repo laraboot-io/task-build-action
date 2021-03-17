@@ -5,7 +5,7 @@ ENV BUILDER_WORKBENCH /app/task
 COPY . .
 RUN apk upgrade -U -a && \
     apk add wget ca-certificates openssl-dev --update-cache && \
-    update-ca-certificates
+    update-ca-certificates && \
     go get github.com/markbates/pkger/cmd/pkger  && \
     apk add bash jq yq curl gcc musl-dev && \
     wget -4 https://github.com/mikefarah/yq/releases/download/v4.2.0/yq_linux_amd64 -O /usr/bin/yq && \
