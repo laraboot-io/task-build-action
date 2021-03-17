@@ -62,9 +62,11 @@ jobs:
             done
           popd
   test_action:
-    name: Release
+    name: Test Github Action
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v2
       - name: Setup build tools
         id: build-actions
         uses: ./ # Uses an action
