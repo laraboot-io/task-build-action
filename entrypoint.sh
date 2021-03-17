@@ -10,7 +10,6 @@ readonly task_directory="$2"
 
 time=$(date)
 echo "::set-output name=time::$time"
-chmod +x ./scripts/main.sh
 
 pushd $task_directory
 /src/scripts/main.sh
