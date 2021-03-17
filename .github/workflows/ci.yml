@@ -47,7 +47,6 @@ jobs:
                   pack inspect-buildpack my-task
                   pack build check-app \
                   --path . \
-                  --buildpack gcr.io/paketo-buildpacks/php-dist \
                   --buildpack docker://my-task \
                   --clear-cache --verbose
                   # clean up
