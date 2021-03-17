@@ -34,7 +34,6 @@ jobs:
           export USER_ID=$(id -u)
           export GROUP_ID=$(id -g)
           export CURRENT_UID=$USER_ID:$GROUP_ID
-          chmod -R +x ./scripts
           docker build -t task-builder .
           pack config default-builder paketobuildpacks/builder:full
           root_path=$(pwd)
