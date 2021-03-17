@@ -55,7 +55,7 @@ function main() {
   # Prep work
   mkdir -p $GO_PROJECT_DIR/dist
 
-#  cmd::copy_task
+  #  cmd::copy_task
   cmd::create_buildpack_file
   cmd::package
   cmd::build
@@ -125,7 +125,7 @@ EOF
 function cmd::build_binaries() {
   echo "----> build_binaries"
   # test & package commands require docker privileges
-  cmd::go_pkg_assets
+  #  cmd::go_pkg_assets
   cmd::go_generate
   cmd::go_build
   cmd::go_export
