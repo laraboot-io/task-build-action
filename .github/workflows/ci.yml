@@ -49,15 +49,15 @@ jobs:
                   -v `pwd`:/github/workspace \
                   -i task-builder \
                   arg0 .
-#                  ls -ltah
-#                  pushd $root_path
-#                  GOOS=linux go build -tags netgo -a -v -ldflags "-X 'main.TaskName=MyTask' -s -w" -o ./bin/detect ./cmd/detect/main.go && \
-#                  GOOS=linux go build -tags netgo -a -v -ldflags "-s -w" -o ./bin/build ./cmd/build/main.go
-#                  popd
-#                  mkdir -p bin
-#                  sudo cp -r $root_path/bin/* ./bin
-#                  pack buildpack package my-task --config package.toml
-                  # debug
+                  #                  ls -ltah
+                  #                  pushd $root_path
+                  #                  GOOS=linux go build -tags netgo -a -v -ldflags "-X 'main.TaskName=MyTask' -s -w" -o ./bin/detect ./cmd/detect/main.go && \
+                  #                  GOOS=linux go build -tags netgo -a -v -ldflags "-s -w" -o ./bin/build ./cmd/build/main.go
+                  #                  popd
+                  #                  mkdir -p bin
+                  #                  sudo cp -r $root_path/bin/* ./bin
+                  #                  pack buildpack package my-task --config package.toml
+                  #                   debug
                   docker images
                   pack inspect-buildpack my-task
                   pack build check-app \
