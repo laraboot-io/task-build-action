@@ -61,13 +61,13 @@ EOF
 
 chmod +x $script_file
 
+popd
+
 GOOS=linux go build -ldflags "-X 'main.TaskName=$pkg_name' -s -w" -o ./bin/detect ./cmd/detect/main.go &&
   GOOS=linux go build -ldflags "-s -w" -o ./bin/build ./cmd/build/main.go &&
   chmod -R +x ./bin
 
 pack buildpack package my-task --config package.toml
-
-popd
 
 #pwd
 #ls -ltah
