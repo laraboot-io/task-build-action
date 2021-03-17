@@ -116,6 +116,11 @@ id = "user/$pkg_name"
 version = "$pkg_version"
 name = "$pkg_name"
 
+[metadata]
+  include-files = ["bin/build", "bin/detect", "buildpack.toml"]
+  [metadata.default-versions]
+    $pkg_name = "$pkg_version"
+
 # Stacks that the buildpack will work with
 [[stacks]]
 id = "io.buildpacks.stacks.bionic"
