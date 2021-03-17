@@ -26,7 +26,6 @@ readonly script_file=./bin/user_script
 mkdir -p bin
 mkdir -p dist/task/bin
 
-
 # 2)
 # Step name: buildpack-config-generation
 # Purpose: Create buildpack.toml and package.toml
@@ -81,16 +80,16 @@ popd
 # Step name: build-time
 # Purpose: compile bin and detect binaries using user data
 # Path: Builder home (where GO source lives)
-#pushd $BUILDER_HOME
-#GOOS=linux go build  -ldflags "-X 'main.TaskName=$pkg_name' -s -w" -o ./bin/detect ./cmd/detect/main.go &&
-#  GOOS=linux go build -ldflags "-s -w" -o ./bin/build ./cmd/build/main.go
-#popd
+pushd $BUILDER_HOME
+CGO_ENABLED=1 GOOS=linux go build -tags netgo -a -v -ldflags "-X 'main.TaskName=$pkg_name' -s -w" -o ./bin/detect ./cmd/detect/main.go
+CGO_ENABLED=1 GOOS=linux go build -tags netgo -a -v -ldflags "-s -w" -o ./bin/build ./cmd/build/main.go
+popd
 
-#pushd $task_directory
-#cp -r $BUILDER_HOME/bin/* ./bin
-#chmod -R +x ./bin
-#pack buildpack package my-task --config package.toml
-#popd
+pushd $task_directory
+cp -r $BUILDER_HOME/bin/* ./bin
+chmod -R +x ./bin
+pack buildpack package my-task --config package.toml
+popd
 
 #cp -r $WORDLY_PLACE/*.toml $BUILDER_WORKBENCH/dist/task &&
 #cp -r $WORDLY_PLACE/bin/* $BUILDER_WORKBENCH/dist/task/bin &&
