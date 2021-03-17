@@ -27,10 +27,17 @@ jobs:
       - name: Get Pack
         run: |
           (curl -sSL "https://github.com/buildpacks/pack/releases/download/v0.17.0/pack-v0.17.0-linux.tgz" | sudo tar -C /usr/local/bin/ --no-same-owner -xzv pack)
+      - uses: actions/setup-go@v2
+        with:
+          go-version: '^1.16'
       - run: |
+          export USER_ID=$(id -u)
+          export GROUP_ID=$(id -g)
+          export CURRENT_UID=$USER_ID:$GROUP_ID
           chmod -R +x ./scripts
           docker build -t task-builder .
           pack config default-builder paketobuildpacks/builder:full
+          root_path=$(pwd)
           pushd examples
             for d in */ ; do
               if [ -d "$d" ]; then
@@ -42,6 +49,14 @@ jobs:
                   -v `pwd`:/github/workspace \
                   -i task-builder \
                   arg0 .
+                  ls -ltah
+                  pusdh $root_path
+                  GOOS=linux go build -ldflags "-X 'main.TaskName=MyTask' -s -w" -o ./bin/detect ./cmd/detect/main.go && \
+                  GOOS=linux go build -ldflags "-s -w" -o ./bin/build ./cmd/build/main.go
+                  popd
+                  mkdir -p bin
+                  cp -r $root_path/bin/* bin
+                  pack buildpack package my-task --config package.toml
                   # debug
                   docker images
                   pack inspect-buildpack my-task
