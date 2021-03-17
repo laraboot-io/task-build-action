@@ -78,6 +78,7 @@ jobs:
       - name: Test the task
         run: |
           (curl -sSL "https://github.com/buildpacks/pack/releases/download/v0.17.0/pack-v0.17.0-linux.tgz" | sudo tar -C /usr/local/bin/ --no-same-owner -xzv pack)
+          pack config default-builder paketobuildpacks/builder:full
           pack build check-app \
           --path ./examples/sample-app \
           --buildpack gcr.io/paketo-buildpacks/php-dist \
