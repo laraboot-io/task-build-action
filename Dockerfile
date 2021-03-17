@@ -1,7 +1,7 @@
 FROM golang:1.16.2-alpine3.13 AS build
 WORKDIR /src
 ENV BUILDER_HOME /src
-ENV BUILDER_WORKBENCH /app/task
+ENV BUILDER_WORKBENCH /github/workspace
 COPY . .
 RUN apk upgrade -U -a && \
     apk add wget ca-certificates openssl-dev --update-cache && \
