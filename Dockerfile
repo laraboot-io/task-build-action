@@ -18,7 +18,7 @@ RUN chmod +x entrypoint.sh && \
     chmod +x ./scripts/build.sh && \
     chmod +x ./scripts/main.sh && \
     mkdir -p dist/bin && \
-    mkdir -p $BUILDER_WORKBENCH
+    mkdir -p $BUILDER_WORKBENCH/dist/bin
 VOLUME /src
 WORKDIR $BUILDER_WORKBENCH
 ENTRYPOINT ["/src/entrypoint.sh"]
