@@ -59,7 +59,7 @@ function cmd::go_pkg_assets() {
   # Clean up assets
   rm -rf $GO_PROJECT_DIR/assets/
   # Copy all bin-dist files into assets folder
-  cp -r $ROOT_DIR/dist/bin $GO_PROJECT_DIR/assets/
+  cp -r $BUILDER_WORKBENCH/dist/bin $GO_PROJECT_DIR/assets/
   #  ls -ltah $GO_PROJECT_DIR/assets/
   pushd $GO_PROJECT_DIR >/dev/null
   readonly cwd=$(pwd)
@@ -86,7 +86,7 @@ function cmd::go_build() {
 
   readonly name="my-task"
 
-  cp -r $ROOT_DIR/dist/* $GO_PROJECT_DIR
+  cp -r $BUILDER_WORKBENCH/dist/* $GO_PROJECT_DIR
   pushd $GO_PROJECT_DIR >/dev/null
 
   GOOS=linux go build -ldflags "-X 'main.TaskName=${name}' -s -w" -o ./bin/detect ./cmd/detect/main.go
@@ -101,7 +101,7 @@ function cmd::go_test() {
   echo "----> ----> go_test"
   #smoke test
   pack build tmp-app \
-    --path $ROOT_DIR/sample-app \
+    --path $BUILDER_WORKBENCH/sample-app \
     --buildpack gcr.io/paketo-buildpacks/php-dist \
     --buildpack docker://$name \
     --builder paketobuildpacks/builder:full \
@@ -109,23 +109,23 @@ function cmd::go_test() {
 }
 
 function cmd::go_export() {
-  mkdir -p $ROOT_DIR/dist/task/bin &&
-    cp -r $GO_PROJECT_DIR/*.toml $ROOT_DIR/dist/task &&
-    cp -r $GO_PROJECT_DIR/bin/* $ROOT_DIR/dist/task/bin
+  mkdir -p $BUILDER_WORKBENCH/dist/task/bin &&
+    cp -r $GO_PROJECT_DIR/*.toml $BUILDER_WORKBENCH/dist/task &&
+    cp -r $GO_PROJECT_DIR/bin/* $BUILDER_WORKBENCH/dist/task/bin
 }
 
 function cmd::go_package() {
-  pushd $ROOT_DIR/dist/task >/dev/null
+  pushd $BUILDER_WORKBENCH/dist/task >/dev/null
   # pack as docker image
   pack buildpack package $name --config ./package.toml
   # pack as file
-  pack buildpack package $ROOT_DIR/dist/$name.cnb --config ./package.toml --format file
+  pack buildpack package $BUILDER_WORKBENCH/dist/$name.cnb --config ./package.toml --format file
   #  jam && jam pack \
   #    --buildpack ./buildpack.toml \
   #    --stack io.paketo.stacks.tiny \
   #    --version 1.2.3 \
   #    --offline \
-  #    --output .$ROOT_DIR/dist/buildpack.tgz
+  #    --output .$BUILDER_WORKBENCH/dist/buildpack.tgz
   popd >/dev/null
 }
 
