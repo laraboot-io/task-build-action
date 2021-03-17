@@ -3,10 +3,6 @@
 set -eu
 set -o pipefail
 
-readonly GO_PROGDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-readonly GO_PROJECT_DIR="$(cd "${GO_PROGDIR}/.." && pwd)"
-readonly ROOT_DIR="$(cd "${GO_PROJECT_DIR}/.." && pwd)"
-
 function main() {
   while [[ "${#}" != 0 ]]; do
     case "${1}" in
