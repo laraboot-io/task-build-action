@@ -38,6 +38,8 @@ jobs:
                   -v `pwd`:/github/workspace \
                   -i task-builder \
                   arg0 .
+                  # debug
+                  docker images
                   # clean up
                   sudo rm -rf dist
                 popd
