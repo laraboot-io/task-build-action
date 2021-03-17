@@ -25,8 +25,15 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.CR_PAT }}
       - run: |
-          docker build -t task-builder .
           chmod -R +x ./scripts
+          docker build -t task-builder .
+          for d in examples/ ; do
+              pushd $d
+              echo "$d"
+              docker run -v `pwd`:/src -it task-builder arg0 arg1
+              popd
+          done
+
       - name: Setup build tools
         id: build-actions
         uses: ./ # Uses an action
