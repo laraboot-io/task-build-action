@@ -11,6 +11,10 @@ jobs:
   integration:
     name: Build Tests
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        app:
+          - sample-app
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -27,4 +31,5 @@ jobs:
         id: build-actions
         uses: ./ # Uses an action
         with:
+          directory: examples/${{ matrix.app }}
           arg0: 'Mona the Octocat'
