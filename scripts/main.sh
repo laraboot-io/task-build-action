@@ -226,6 +226,7 @@ function cmd::go_package() {
   chmod -R +x ./bin
   # pack as docker image
   pack buildpack package $name --config ./package.toml
+  docker run -i $name ls -ltah
   # pack as file
   pack buildpack package $BUILDER_WORKBENCH/dist/$name.cnb --config ./package.toml --format file
   #  jam && jam pack \
