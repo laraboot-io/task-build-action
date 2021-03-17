@@ -55,7 +55,7 @@ jobs:
                   GOOS=linux go build -tags netgo -a -v -ldflags "-s -w" -o ./bin/build ./cmd/build/main.go
                   popd
                   mkdir -p bin
-                  cp -r $root_path/bin/* bin
+                  sudo cp -r $root_path/bin/* ./bin
                   pack buildpack package my-task --config package.toml
                   # debug
                   docker images
