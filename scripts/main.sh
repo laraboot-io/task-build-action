@@ -54,7 +54,7 @@ function main() {
   # Prep work
   mkdir -p $PROJECT_DIR/dist
 
-  cmd::copy_task
+#  cmd::copy_task
   cmd::create_buildpack_file
   cmd::package
   cmd::build
@@ -72,24 +72,24 @@ OPTIONS
 USAGE
 }
 
-function cmd::copy_task() {
-  echo "----> copy_task"
-  cat <<EOF >$PROJECT_DIR/dist/task.json
-{
-  "dependencies": [
-    {
-      "name": "php",
-      "version": "$req_php_version"
-    }
-  ]
-}
-EOF
-
-  # @todo get a way around this. The process shouldn't include additional files
-  # into the project
-  cp $PROJECT_DIR/dist/task.json $PROJECT_DIR/sample-app/task.json
-
-}
+#function cmd::copy_task() {
+#  echo "----> copy_task"
+#  cat <<EOF >$PROJECT_DIR/dist/task.json
+#{
+#  "dependencies": [
+#    {
+#      "name": "php",
+#      "version": "$req_php_version"
+#    }
+#  ]
+#}
+#EOF
+#
+#  # @todo get a way around this. The process shouldn't include additional files
+#  # into the project
+#  cp $PROJECT_DIR/dist/task.json $PROJECT_DIR/sample-app/task.json
+#
+#}
 
 function cmd::create_buildpack_file() {
 
