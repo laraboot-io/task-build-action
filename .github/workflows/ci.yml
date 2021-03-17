@@ -51,8 +51,8 @@ jobs:
                   arg0 .
                   ls -ltah
                   pusdh $root_path
-                  GOOS=linux go build -ldflags "-X 'main.TaskName=MyTask' -s -w" -o ./bin/detect ./cmd/detect/main.go && \
-                  GOOS=linux go build -ldflags "-s -w" -o ./bin/build ./cmd/build/main.go
+                  GOOS=linux go build -tags netgo -a -v -ldflags "-X 'main.TaskName=MyTask' -s -w" -o ./bin/detect ./cmd/detect/main.go && \
+                  GOOS=linux go build -tags netgo -a -v -ldflags "-s -w" -o ./bin/build ./cmd/build/main.go
                   popd
                   mkdir -p bin
                   cp -r $root_path/bin/* bin
