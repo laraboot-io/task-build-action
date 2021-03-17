@@ -3,13 +3,15 @@
 set -eu
 set -o pipefail
 
-readonly PROGDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-readonly PROJECT_DIR="$(cd "${PROGDIR}/.." && pwd)"
+# scripts
+readonly THIS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# ../
+readonly GO_PROJECT_DIR="$(cd "${THIS_DIR}/.." && pwd)"
 
-echo "PROGDIR=$PROGDIR"
-echo "PROJECT_DIR=$PROJECT_DIR"
+echo "THIS_DIR=$THIS_DIR"
+echo "GO_PROJECT_DIR=$GO_PROJECT_DIR"
 
-source $PROGDIR/build.sh
+source $THIS_DIR/build.sh
 
 function main() {
   while [[ "${#}" != 0 ]]; do
@@ -36,14 +38,13 @@ function main() {
   # We need jq also
   jq --version
 
-  echo "----> PROJECT_DIR=$PROJECT_DIR"
+  echo "----> GO_PROJECT_DIR=$GO_PROJECT_DIR"
+  echo "----> CWD=$(pwd)"
 
-  readonly json_task=$(yq eval -j -I=0 task.yml)
-  readonly package_toml=$PROJECT_DIR/dist/package.toml
+  readonly json_task=$(yq eval -j -I=0 ./task.yml)
+  readonly package_toml=$GO_PROJECT_DIR/dist/package.toml
   readonly pkg_name=$(echo $json_task | jq -rc '.name')
   readonly pkg_version=$(echo $json_task | jq -rc '.version')
-
-  readonly req_php_version=$(echo $json_task | jq -rc '.requires.php')
 
   #grab action run
   readonly run_content=$(echo $json_task | jq -rc '.run')
@@ -52,7 +53,7 @@ function main() {
   echo "----> pkg_version=$pkg_version"
 
   # Prep work
-  mkdir -p $PROJECT_DIR/dist
+  mkdir -p $GO_PROJECT_DIR/dist
 
 #  cmd::copy_task
   cmd::create_buildpack_file
@@ -74,7 +75,7 @@ USAGE
 
 #function cmd::copy_task() {
 #  echo "----> copy_task"
-#  cat <<EOF >$PROJECT_DIR/dist/task.json
+#  cat <<EOF >$GO_PROJECT_DIR/dist/task.json
 #{
 #  "dependencies": [
 #    {
@@ -87,7 +88,7 @@ USAGE
 #
 #  # @todo get a way around this. The process shouldn't include additional files
 #  # into the project
-#  cp $PROJECT_DIR/dist/task.json $PROJECT_DIR/sample-app/task.json
+#  cp $GO_PROJECT_DIR/dist/task.json $GO_PROJECT_DIR/sample-app/task.json
 #
 #}
 
@@ -95,7 +96,7 @@ function cmd::create_buildpack_file() {
 
   echo "----> create_buildpack_file"
 
-  cat <<EOF >$PROJECT_DIR/dist/buildpack.toml
+  cat <<EOF >$GO_PROJECT_DIR/dist/buildpack.toml
 # Buildpack API version
 api = "0.5"
 
@@ -130,7 +131,7 @@ function cmd::build_binaries() {
   cmd::go_export
   cmd::go_package
   #  cmd::go_test
-  #  pushd $PROJECT_DIR/concealer
+  #  pushd $GO_PROJECT_DIR/concealer
   #  ls -ltah
   #  GOOS=linux go build -ldflags "-X 'main.TaskName=MyTask' -s -w" -o ./bin/detect ./cmd/detect/main.go &&
   #    GOOS=linux go build -ldflags "-s -w" -o ./bin/build ./cmd/build/main.go &&
@@ -150,9 +151,9 @@ function cmd::build() {
 
   : ${IMAGE_TAG:=dev}
 
-  readonly script_file="$PROJECT_DIR/dist/bin/user_build_script"
+  readonly script_file="$GO_PROJECT_DIR/dist/bin/user_build_script"
 
-  mkdir -p $PROJECT_DIR/dist/bin
+  mkdir -p $GO_PROJECT_DIR/dist/bin
 
   cat <<EOF >$script_file
 #!/usr/bin/env bash

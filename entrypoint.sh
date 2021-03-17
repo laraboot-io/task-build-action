@@ -12,5 +12,5 @@ time=$(date)
 echo "::set-output name=time::$time"
 
 pushd $task_directory
-/src/scripts/main.sh
+$BUILDER_HOME/scripts/main.sh
 popd > /dev
