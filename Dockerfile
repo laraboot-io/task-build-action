@@ -16,5 +16,7 @@ RUN chmod +x entrypoint.sh && \
     chmod +x ./scripts/build.sh && \
     chmod +x ./scripts/main.sh && \
     mkdir -p dist/bin
+    mkdir -p /app/task
 VOLUME /src
+WORKDIR /app/task
 ENTRYPOINT ["/src/entrypoint.sh"]
