@@ -27,12 +27,16 @@ jobs:
       - run: |
           chmod -R +x ./scripts
           docker build -t task-builder .
-          for d in examples/ ; do
-              pushd $d
-              echo "$d"
-              docker run -v `pwd`:/src -it task-builder arg0 arg1
-              popd
-          done
+          pushd examples
+            for d in */ ; do
+              if [ -d "$d" ]; then
+                pushd $d
+                echo "$d"
+                docker run -v `pwd`:/src -i task-builder arg0 arg1
+                popd
+              fi
+            done
+          popd
 
       - name: Setup build tools
         id: build-actions
