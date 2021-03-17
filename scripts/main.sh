@@ -207,7 +207,8 @@ function cmd::go_export() {
   echo "----> ----> go_export"
   mkdir -p $BUILDER_WORKBENCH/dist/task/bin &&
     cp -r $WORDLY_PLACE/*.toml $BUILDER_WORKBENCH/dist/task &&
-    cp -r $WORDLY_PLACE/bin/* $BUILDER_WORKBENCH/dist/task/bin
+    cp -r $WORDLY_PLACE/bin/* $BUILDER_WORKBENCH/dist/task/bin &&
+    cp -r $GO_PROJECT_DIR/bin/* $BUILDER_WORKBENCH/dist/task/bin
   ls -ltah $BUILDER_WORKBENCH/dist/task
   ls -ltah $BUILDER_WORKBENCH/dist/task/bin
 }
