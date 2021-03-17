@@ -24,9 +24,13 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.CR_PAT }}
+      - name: Get Pack
+        run: |
+          (curl -sSL "https://github.com/buildpacks/pack/releases/download/v0.17.0/pack-v0.17.0-linux.tgz" | sudo tar -C /usr/local/bin/ --no-same-owner -xzv pack)
       - run: |
           chmod -R +x ./scripts
           docker build -t task-builder .
+          pack config default-builder paketobuildpacks/builder:full
           pushd examples
             for d in */ ; do
               if [ -d "$d" ]; then
@@ -40,6 +44,11 @@ jobs:
                   arg0 .
                   # debug
                   docker images
+                  pack build check-app \
+                  --path . \
+                  --buildpack gcr.io/paketo-buildpacks/php-dist \
+                  --buildpack docker://my-task \
+                  --clear-cache --verbose
                   # clean up
                   sudo rm -rf dist
                 popd
