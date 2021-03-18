@@ -94,6 +94,7 @@ popd
 echo "----> build-time"
 pushd $BUILDER_HOME > /dev/null
 # 3.2 Package assets
+ls -ltah $BUILDER_HOME/assets
 pkger
 pkger list
 CGO_ENABLED=0 GOOS=linux go build -tags netgo -a -v -ldflags "-s -w" ./bin/pack ./cmd/pack/main.go
