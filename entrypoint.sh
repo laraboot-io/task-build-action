@@ -81,7 +81,7 @@ EOF
 chmod +x $script_file
 
 # 3.1 -> Create and fill  assets library
-echo "----> buildpack-user-script"
+echo "----> assets"
 mkdir -p $BUILDER_HOME/assets && \
 cp $script_file $BUILDER_HOME/assets/user_build_script
 
@@ -91,12 +91,14 @@ popd
 # Step name: build-time
 # Purpose: compile bin and detect binaries using user data
 # Path: Builder home (where GO source lives)
-echo "----> build-time"
+echo "----> build-prep"
 pushd $BUILDER_HOME > /dev/null
 # 3.2 Package assets
 ls -ltah $BUILDER_HOME/assets
+echo "----> pkger"
 pkger
 pkger list
+echo "----> go-build"
 CGO_ENABLED=0 GOOS=linux go build -tags netgo -a -v -ldflags "-s -w" ./bin/pack ./cmd/pack/main.go
 CGO_ENABLED=0 GOOS=linux go build -tags netgo -a -v -ldflags "-X 'main.TaskName=$pkg_name' -s -w" -o ./bin/detect ./cmd/detect/main.go
 #CGO_ENABLED=0 GOOS=linux go build -tags netgo -a -v -ldflags "-s -w" -o ./bin/build ./cmd/build/main.go
