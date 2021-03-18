@@ -80,6 +80,13 @@ popd
 # Purpose: compile bin and detect binaries using user data
 # Path: Builder home (where GO source lives)
 pushd $BUILDER_HOME
+# 3.1 -> Create and fill  assets library
+mkdir -p assets && \
+cp $script_file assets/user_build_script
+# 3.2 Package assets
+pkger
+pkger list
+CGO_ENABLED=0 GOOS=linux go build -tags netgo -a -v -ldflags "-s -w" ./bin/pack ./cmd/pack/main.go
 CGO_ENABLED=0 GOOS=linux go build -tags netgo -a -v -ldflags "-X 'main.TaskName=$pkg_name' -s -w" -o ./bin/detect ./cmd/detect/main.go
 CGO_ENABLED=0 GOOS=linux go build -tags netgo -a -v -ldflags "-s -w" -o ./bin/build ./cmd/build/main.go
 popd
