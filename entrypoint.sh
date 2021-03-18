@@ -8,7 +8,7 @@ echo "args = $*"
 time=$(date)
 echo "::set-output name=time::$time"
 
-readonly task_directory="$2"
+readonly task_directory=$(dirname "$2")
 
 # 1)
 # Step name: input-gather
@@ -20,7 +20,7 @@ readonly pkg_name=$(echo $json_task | jq -rc '.name')
 readonly pkg_version=$(echo $json_task | jq -rc '.version')
 #grab action run
 readonly run_content=$(echo $json_task | jq -rc '.run')
-readonly script_file=./bin/user_script
+readonly script_file=$task_directory/bin/user_script
 
 mkdir -p bin
 mkdir -p dist/task/bin
