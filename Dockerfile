@@ -12,9 +12,9 @@ RUN apk upgrade -U -a && \
     chmod +x /usr/bin/yq && \
     (curl -sSL "https://github.com/buildpacks/pack/releases/download/v0.17.0/pack-v0.17.0-linux.tgz" | tar -C /usr/local/bin/ --no-same-owner -xzv pack) && \
     wget -4 https://github.com/paketo-buildpacks/packit/releases/download/v0.8.0/jam-linux -O /usr/bin/jam && \
-    pushd $BUILDER_HOME && \
+    cd $BUILDER_HOME && \
     go mod download  && \
-    popd && \
+    cd $BUILDER_WORKBENCH && \
     chmod +x /usr/bin/jam  && \
     chmod +x entrypoint.sh && \
     mkdir -p dist/bin && \
