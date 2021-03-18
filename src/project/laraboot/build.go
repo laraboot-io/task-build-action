@@ -94,17 +94,17 @@ func Build(logger LogEmitter, clock chronos.Clock) packit.BuildFunc {
 		// output := string(cmd)
 		// fmt.Println(output)
 
-		content := []byte("temporary file's content")
-		tmpfile, err := ioutil.TempFile(fmt.Sprintf("%s/bin", context.CNBPath), "user_build_script")
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		defer os.Remove(tmpfile.Name()) // clean up
-
-		if _, err := tmpfile.Write(content); err != nil {
-			log.Fatal(err)
-		}
+		//content := []byte("temporary file's content")
+		//tmpfile, err := ioutil.TempFile(fmt.Sprintf("%s/bin", context.CNBPath), "user_build_script")
+		//if err != nil {
+		//	log.Fatal(err)
+		//}
+		//
+		//defer os.Remove(tmpfile.Name()) // clean up
+		//
+		//if _, err := tmpfile.Write(content); err != nil {
+		//	log.Fatal(err)
+		//}
 
 		cmd, err := exec.Command(fmt.Sprintf("cat %s/bin/user_build_script", context.CNBPath)).Output()
 		output := string(cmd)
