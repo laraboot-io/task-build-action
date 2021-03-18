@@ -55,8 +55,8 @@ homepage = "https://laraboot.io/tasks/user/$pkg_name"
 
 [metadata]
   include-files = ["bin/build", "bin/detect", "bin/user_build_script", "buildpack.toml"]
-  [metadata.default-versions]
-    $pkg_name = "$pkg_version"
+#  [metadata.default-versions]
+#    $pkg_name = "$pkg_version"
 
 # Stacks that the buildpack will work with
 [[stacks]]
