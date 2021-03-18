@@ -137,12 +137,5 @@ func Build(logger LogEmitter, clock chronos.Clock) packit.BuildFunc {
 				},
 			},
 		}, nil
-
-		// return packit.BuildResult{
-		// 	Plan: context.Plan,
-		// 	Layers: []packit.Layer{
-		// 		nodeLayer,
-		// 	},
-		// }, nil
 	}
 }

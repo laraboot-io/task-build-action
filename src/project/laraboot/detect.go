@@ -89,9 +89,9 @@ func resolveDependenciesToRequirements(deps DependenciesArray) []packit.BuildPla
 		requirements = append(requirements, packit.BuildPlanRequirement{
 			Name:    s.Name,
 			Version: s.Version,
-			Metadata: map[string]string{
-				"launch": "true",
-				"build":  "true",
+			Metadata: map[string]bool{
+				"build":  true,
+				"launch": true,
 			},
 		})
 	}
