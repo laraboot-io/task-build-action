@@ -28,7 +28,6 @@ readonly run_content=$(echo $json_task | jq -rc '.run')
 readonly script_file=./bin/user_script
 
 mkdir -p bin
-mkdir -p dist/task/bin
 
 # 2)
 # Step name: buildpack-config-generation
@@ -83,6 +82,7 @@ chmod +x $script_file
 # 3.1 -> Create and fill  assets library
 echo "----> assets"
 mkdir -p $BUILDER_HOME/assets && \
+mkdir -p $BUILDER_HOME/bin && \
 cp $script_file $BUILDER_HOME/assets/user_build_script && \
 cp $script_file $BUILDER_HOME/bin/user_build_script
 ls -ltah $BUILDER_HOME/assets
