@@ -1,7 +1,5 @@
 // The following directive is necessary to make the package coherent:
 
-// +build ignore
-
 // This program generates contributors.go. It can be invoked by running
 // go generate
 package main

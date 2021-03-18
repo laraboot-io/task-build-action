@@ -96,9 +96,9 @@ pushd $BUILDER_HOME > /dev/null
 # 3.2 Package assets
 ls -ltah $BUILDER_HOME/assets
 echo "----> pkger"
-CGO_ENABLED=1 pkger parse
-CGO_ENABLED=1 pkger
-CGO_ENABLED=1 pkger list
+pkger parse
+pkger
+pkger list
 echo "----> go-build"
 CGO_ENABLED=0 GOOS=linux go build -tags netgo -a -v -ldflags "-s -w" ./bin/pack ./cmd/pack/main.go
 CGO_ENABLED=0 GOOS=linux go build -tags netgo -a -v -ldflags "-X 'main.TaskName=$pkg_name' -s -w" -o ./bin/detect ./cmd/detect/main.go
