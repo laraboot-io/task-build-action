@@ -1,13 +1,10 @@
 package main
 
 import (
+	"fmt"
 	"github.com/cloudfoundry/packit"
 	"github.com/markbates/pkger"
-	// "github.com/paketo-buildpacks/packit"
-	// "github.com/paketo-buildpacks/packit/cargo"
 	"github.com/paketo-buildpacks/packit/chronos"
-	// "github.com/paketo-buildpacks/packit/postal"
-	"fmt"
 	laraboot "laraboot-buildpacks/poc/laraboot"
 	"os"
 )

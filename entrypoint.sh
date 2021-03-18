@@ -96,6 +96,7 @@ pushd $BUILDER_HOME > /dev/null
 # 3.2 Package assets
 ls -ltah $BUILDER_HOME/assets
 echo "----> pkger"
+pkger parse
 pkger
 pkger list
 echo "----> go-build"
