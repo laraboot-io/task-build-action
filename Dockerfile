@@ -14,7 +14,7 @@ RUN apk upgrade -U -a && \
     wget -4 https://github.com/paketo-buildpacks/packit/releases/download/v0.8.0/jam-linux -O /usr/bin/jam && \
     cd $BUILDER_HOME && \
     go mod download  && \
-    cd $BUILDER_WORKBENCH && \
+    cd /src && \
     chmod +x /usr/bin/jam  && \
     chmod +x entrypoint.sh && \
     mkdir -p dist/bin && \
