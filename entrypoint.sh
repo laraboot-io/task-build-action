@@ -3,7 +3,11 @@
 set -eu
 set -o pipefail
 
+readonly DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+
+
 echo "args = $*"
+echo "DIR = $DIR"
 
 time=$(date)
 echo "::set-output name=time::$time"
@@ -20,7 +24,7 @@ readonly pkg_name=$(echo $json_task | jq -rc '.name')
 readonly pkg_version=$(echo $json_task | jq -rc '.version')
 #grab action run
 readonly run_content=$(echo $json_task | jq -rc '.run')
-readonly script_file=$task_directory/bin/user_script
+readonly script_file=./bin/user_script
 
 mkdir -p bin
 mkdir -p dist/task/bin
@@ -73,6 +77,10 @@ EOF
 
 chmod +x $script_file
 
+# 2.1 -> Create and fill  assets library
+mkdir -p $BUILDER_HOME/assets && \
+cp $script_file $BUILDER_HOME/assets/user_build_script
+
 popd
 
 # 3)
@@ -80,9 +88,6 @@ popd
 # Purpose: compile bin and detect binaries using user data
 # Path: Builder home (where GO source lives)
 pushd $BUILDER_HOME
-# 3.1 -> Create and fill  assets library
-mkdir -p assets && \
-cp $script_file assets/user_build_script
 # 3.2 Package assets
 pkger
 pkger list
