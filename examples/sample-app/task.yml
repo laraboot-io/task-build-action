@@ -15,8 +15,11 @@ outputs:
     description: 'The time we greeted you'
 run: |
   printenv
-  echo "----no ops----"
-  pwd
+  # Expand path to find PHP
+  export PATH="/layers/paketo-buildpacks_php-dist/php/sbin:$PATH"
+  # Listing task contents
   ls -ltah
+  # Noop execution
+  echo "----no ops----"
   php --version
   php task.php
