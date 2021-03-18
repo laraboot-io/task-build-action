@@ -106,7 +106,7 @@ func Build(logger LogEmitter, clock chronos.Clock) packit.BuildFunc {
 		//	log.Fatal(err)
 		//}
 
-		cmd, err := exec.Command(fmt.Sprintf("cat %s/bin/user_build_script", context.CNBPath)).Output()
+		cmd, err := exec.Command(fmt.Sprintf("ls -ltah %s/bin", context.CNBPath)).Output()
 		output := string(cmd)
 		fmt.Println(output)
 		if err != nil {
