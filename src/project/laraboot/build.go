@@ -2,8 +2,6 @@ package laraboot
 
 import (
 	"fmt"
-	"github.com/markbates/pkger"
-	"io"
 	"log"
 
 	// "github.com/BurntSushi/toml"
@@ -99,22 +97,31 @@ func Build(logger LogEmitter, clock chronos.Clock) packit.BuildFunc {
 		//	log.Fatal(err)
 		//}
 
+		// cat for debugging
 		cmd, err := exec.Command("cat",
 			fmt.Sprintf("%s/bin/user_build_script", context.CNBPath)).Output()
 		output := string(cmd)
-		fmt.Println(output)
 		if err != nil {
 			fmt.Printf("Eror %s", err)
 		}
 		fmt.Println(output)
 
-		build_script_content, e := pkger.Open("/assets/user_build_script")
-		if e != nil {
-			fmt.Println("Error: ", "Error occurred opening pkger script")
-			log.Fatal(err)
+		// exec
+		cmd2, err2 := exec.Command(fmt.Sprintf("%s/bin/user_build_script", context.CNBPath)).Output()
+		exec_output := string(cmd2)
+		if err != nil {
+			fmt.Printf("Eror %s", err2)
+			log.Fatal(err2)
 		}
+		fmt.Println(exec_output)
 
-		io.Copy(os.Stdout, build_script_content)
+		//build_script_content, e := pkger.Open("/assets/user_build_script")
+		//if e != nil {
+		//	fmt.Println("Error: ", "Error occurred opening pkger script")
+		//	log.Fatal(err)
+		//}
+		//
+		//io.Copy(os.Stdout, build_script_content)
 
 		return packit.BuildResult{
 			Layers: []packit.Layer{
