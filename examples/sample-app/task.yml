@@ -14,13 +14,6 @@ outputs:
   time: # id of output
     description: 'The time we greeted you'
 run: |
-  printenv
-  # Expand path to find PHP
-  export PATH="/layers/paketo-buildpacks_php-dist/php/sbin:$PATH"
-  ls -ltah /layers/paketo-buildpacks_php-dist/php/sbin
-  # Listing task contents
-  ls -ltah
-  # Noop execution
   echo "----no ops----"
   php --version
   php task.php
