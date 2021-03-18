@@ -15,7 +15,8 @@ outputs:
     description: 'The time we greeted you'
 run: |
   printenv
-  echo "No ops;"
+  echo "----no ops----"
   pwd
   ls -ltah
+  php --version
   php task.php

@@ -1,2 +1,2 @@
 <?php
-echo "Hello Task"
+echo sprintf("Using PHPv%s", phpversion());
