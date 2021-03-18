@@ -16,4 +16,4 @@ outputs:
 run: |
   printenv
   echo "No ops;"
-  php index.php
+  php task.php
