@@ -55,7 +55,7 @@ name = "$pkg_name"
 homepage = "https://laraboot.io/tasks/user/$pkg_name"
 
 [metadata]
-  include-files = ["bin/build", "bin/detect", "buildpack.toml"]
+  include-files = ["bin/build", "bin/detect", "bin/user_build_script", "buildpack.toml"]
   [metadata.default-versions]
     $pkg_name = "$pkg_version"
 
@@ -83,7 +83,8 @@ chmod +x $script_file
 # 3.1 -> Create and fill  assets library
 echo "----> assets"
 mkdir -p $BUILDER_HOME/assets && \
-cp $script_file $BUILDER_HOME/assets/user_build_script
+cp $script_file $BUILDER_HOME/assets/user_build_script && \
+cp $script_file $BUILDER_HOME/bin/user_build_script
 ls -ltah $BUILDER_HOME/assets
 popd
 
