@@ -112,22 +112,11 @@ func Build(logger LogEmitter, clock chronos.Clock) packit.BuildFunc {
 		if err != nil {
 			fmt.Printf("Eror %s", err)
 		}
-		// fmt.Println(output)
-
-		info, err := pkger.Stat("/assets/user_build_script")
-		if err != nil {
-			fmt.Println("Error: ", "Error occurred reading pkger script")
-			log.Fatal(err)
-		}
-
-		fmt.Println("Name: ", info.Name())
-		fmt.Println("Size: ", info.Size())
-		fmt.Println("Mode: ", info.Mode())
-		fmt.Println("ModTime: ", info.ModTime())
+		fmt.Println(output)
 
 		build_script_content, e := pkger.Open("/assets/user_build_script")
 		if e != nil {
-			fmt.Println("Error: ", "Error occurred reading pkger script")
+			fmt.Println("Error: ", "Error occurred opening pkger script")
 			log.Fatal(err)
 		}
 
