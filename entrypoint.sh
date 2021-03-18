@@ -19,7 +19,7 @@ readonly task_directory=$(dirname "$2")
 # Purpose: Get the settings from task.yml
 # Path: TaskDirectory
 echo "----> input-gather"
-pushd $task_directory
+pushd $task_directory > /dev/null
 readonly json_task=$(yq eval -j -I=0 ./task.yml)
 readonly pkg_name=$(echo $json_task | jq -rc '.name')
 readonly pkg_version=$(echo $json_task | jq -rc '.version')
@@ -92,16 +92,16 @@ popd
 # Purpose: compile bin and detect binaries using user data
 # Path: Builder home (where GO source lives)
 echo "----> build-time"
-pushd $BUILDER_HOME
+pushd $BUILDER_HOME > /dev/null
 # 3.2 Package assets
 pkger
 pkger list
 CGO_ENABLED=0 GOOS=linux go build -tags netgo -a -v -ldflags "-s -w" ./bin/pack ./cmd/pack/main.go
 CGO_ENABLED=0 GOOS=linux go build -tags netgo -a -v -ldflags "-X 'main.TaskName=$pkg_name' -s -w" -o ./bin/detect ./cmd/detect/main.go
-CGO_ENABLED=0 GOOS=linux go build -tags netgo -a -v -ldflags "-s -w" -o ./bin/build ./cmd/build/main.go
+#CGO_ENABLED=0 GOOS=linux go build -tags netgo -a -v -ldflags "-s -w" -o ./bin/build ./cmd/build/main.go
 popd
 
-pushd $task_directory
+pushd $task_directory > /dev/null
 cp -r $BUILDER_HOME/bin/* ./bin
 chmod -R +x ./bin
 pack buildpack package my-task --config package.toml
