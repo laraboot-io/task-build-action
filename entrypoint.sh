@@ -84,7 +84,7 @@ chmod +x $script_file
 echo "----> assets"
 mkdir -p $BUILDER_HOME/assets && \
 cp $script_file $BUILDER_HOME/assets/user_build_script
-
+ls -ltah $BUILDER_HOME/assets
 popd
 
 # 4)
