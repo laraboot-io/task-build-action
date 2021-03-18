@@ -18,6 +18,7 @@ readonly task_directory=$(dirname "$2")
 # Step name: input-gather
 # Purpose: Get the settings from task.yml
 # Path: TaskDirectory
+echo "----> input-gather"
 pushd $task_directory
 readonly json_task=$(yq eval -j -I=0 ./task.yml)
 readonly pkg_name=$(echo $json_task | jq -rc '.name')
@@ -33,6 +34,7 @@ mkdir -p dist/task/bin
 # Step name: buildpack-config-generation
 # Purpose: Create buildpack.toml and package.toml
 # Path: TaskDirectory
+echo "----> buildpack-config-generation"
 
 # Create package.toml
 cat <<EOF >./package.toml
@@ -66,6 +68,7 @@ EOF
 # Step name: buildpack-user-script
 # Purpose: Put the custom script on a file to be executed by lifecycle
 # Path: TaskDirectory
+echo "----> buildpack-user-script"
 
 cat <<EOF >$script_file
 #!/usr/bin/env bash
@@ -77,16 +80,18 @@ EOF
 
 chmod +x $script_file
 
-# 2.1 -> Create and fill  assets library
+# 3.1 -> Create and fill  assets library
+echo "----> buildpack-user-script"
 mkdir -p $BUILDER_HOME/assets && \
 cp $script_file $BUILDER_HOME/assets/user_build_script
 
 popd
 
-# 3)
+# 4)
 # Step name: build-time
 # Purpose: compile bin and detect binaries using user data
 # Path: Builder home (where GO source lives)
+echo "----> build-time"
 pushd $BUILDER_HOME
 # 3.2 Package assets
 pkger
