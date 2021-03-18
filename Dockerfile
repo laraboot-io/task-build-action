@@ -1,6 +1,6 @@
 FROM golang:1.16.2-alpine3.13 AS build
 WORKDIR /src
-ENV BUILDER_HOME /src
+ENV BUILDER_HOME /src/src/project
 ENV BUILDER_WORKBENCH /github/workspace
 COPY . .
 RUN apk upgrade -U -a && \
