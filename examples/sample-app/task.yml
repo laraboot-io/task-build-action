@@ -14,6 +14,6 @@ outputs:
   time: # id of output
     description: 'The time we greeted you'
 run: |
-  printenv
-  echo "No ops;"
-  php index.php
+  echo "----no ops----"
+  php --version
+  php task.php

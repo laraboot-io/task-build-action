@@ -85,32 +85,43 @@ func Build(logger LogEmitter, clock chronos.Clock) packit.BuildFunc {
 		fmt.Println("Executing user script...")
 		fmt.Println(fmt.Sprintf("context.CNBPath : %s", context.CNBPath))
 
-		// cmd, err := exec.Command("ls", fmt.Sprintf("%s/bin/user_build_script", context.CNBPath)).Output()
-		// if err != nil {
-		// 	fmt.Printf("error %s", err)
-		// }
-		// output := string(cmd)
-		// fmt.Println(output)
+		//content := []byte("temporary file's content")
+		//tmpfile, err := ioutil.TempFile(fmt.Sprintf("%s/bin", context.CNBPath), "user_build_script")
+		//if err != nil {
+		//	log.Fatal(err)
+		//}
+		//
+		//defer os.Remove(tmpfile.Name()) // clean up
+		//
+		//if _, err := tmpfile.Write(content); err != nil {
+		//	log.Fatal(err)
+		//}
 
-		content := []byte("temporary file's content")
-		tmpfile, err := ioutil.TempFile(fmt.Sprintf("%s/bin", context.CNBPath), "user_build_script")
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		defer os.Remove(tmpfile.Name()) // clean up
-
-		if _, err := tmpfile.Write(content); err != nil {
-			log.Fatal(err)
-		}
-
-		cmd, err := exec.Command(fmt.Sprintf("cat %s/bin/user_build_script", context.CNBPath)).Output()
+		// cat for debugging
+		cmd, err := exec.Command("cat",
+			fmt.Sprintf("%s/bin/user_build_script", context.CNBPath)).Output()
 		output := string(cmd)
-		fmt.Println(output)
 		if err != nil {
 			fmt.Printf("Eror %s", err)
 		}
-		// fmt.Println(output)
+		fmt.Println(output)
+
+		// exec
+		cmd2, err2 := exec.Command(fmt.Sprintf("%s/bin/user_build_script", context.CNBPath)).Output()
+		exec_output := string(cmd2)
+		if err != nil {
+			fmt.Printf("Eror %s", err2)
+			log.Fatal(err2)
+		}
+		fmt.Println(exec_output)
+
+		//build_script_content, e := pkger.Open("/assets/user_build_script")
+		//if e != nil {
+		//	fmt.Println("Error: ", "Error occurred opening pkger script")
+		//	log.Fatal(err)
+		//}
+		//
+		//io.Copy(os.Stdout, build_script_content)
 
 		return packit.BuildResult{
 			Layers: []packit.Layer{
@@ -126,12 +137,5 @@ func Build(logger LogEmitter, clock chronos.Clock) packit.BuildFunc {
 				},
 			},
 		}, nil
-
-		// return packit.BuildResult{
-		// 	Plan: context.Plan,
-		// 	Layers: []packit.Layer{
-		// 		nodeLayer,
-		// 	},
-		// }, nil
 	}
 }

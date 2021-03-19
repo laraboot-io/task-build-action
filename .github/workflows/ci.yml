@@ -24,9 +24,19 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.CR_PAT }}
+      - name: Get Pack
+        run: |
+          (curl -sSL "https://github.com/buildpacks/pack/releases/download/v0.17.0/pack-v0.17.0-linux.tgz" | sudo tar -C /usr/local/bin/ --no-same-owner -xzv pack)
+      - uses: actions/setup-go@v2
+        with:
+          go-version: '^1.16'
       - run: |
-          chmod -R +x ./scripts
+          export USER_ID=$(id -u)
+          export GROUP_ID=$(id -g)
+          export CURRENT_UID=$USER_ID:$GROUP_ID
           docker build -t task-builder .
+          pack config default-builder paketobuildpacks/builder:full
+          root_path=$(pwd)
           pushd examples
             for d in */ ; do
               if [ -d "$d" ]; then
@@ -38,18 +48,57 @@ jobs:
                   -v `pwd`:/github/workspace \
                   -i task-builder \
                   arg0 .
-                  # debug
                   docker images
+                  pack inspect-buildpack my-task
+                  pack build check-app \
+                  --path . \
+                  --buildpack gcr.io/paketo-buildpacks/php-dist \
+                  --buildpack docker://my-task \
+                  --clear-cache --verbose
                   # clean up
                   sudo rm -rf dist
                 popd
               fi
             done
           popd
-
+  test_action:
+    name: Test Github Action
+    runs-on: ubuntu-latest
+    needs:
+      - integration
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Prep work
+        run: |
+          export BUILDER_WORKBENCH=/github/workspace
       - name: Setup build tools
         id: build-actions
         uses: ./ # Uses an action
         with:
           arg0: 'arg0'
-          directory: ./examples/${{ matrix.app }}
+          directory: ./examples/sample-app
+      - name: Test the task
+        run: |
+          (curl -sSL "https://github.com/buildpacks/pack/releases/download/v0.17.0/pack-v0.17.0-linux.tgz" | sudo tar -C /usr/local/bin/ --no-same-owner -xzv pack)
+          pack config default-builder paketobuildpacks/builder:full
+          pack build check-app \
+          --path ./examples/sample-app \
+          --buildpack gcr.io/paketo-buildpacks/php-dist \
+          --buildpack docker://my-task \
+          --clear-cache --verbose
+
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    needs:
+      - test_action
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.CR_PAT }}
