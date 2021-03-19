@@ -109,5 +109,6 @@ popd
 pushd $task_directory > /dev/null
 cp -r $BUILDER_HOME/bin/* ./bin
 chmod -R +x ./bin
+cat package.toml
 pack buildpack package my-task --config package.toml
 popd
