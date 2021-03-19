@@ -5,7 +5,6 @@ set -o pipefail
 
 readonly DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 
-
 echo "args = $*"
 echo "DIR = $DIR"
 
@@ -14,12 +13,21 @@ echo "::set-output name=time::$time"
 
 readonly task_directory=$(dirname "$2")
 
+
 # 1)
 # Step name: input-gather
 # Purpose: Get the settings from task.yml
 # Path: TaskDirectory
 echo "----> input-gather"
+echo "----> using $task_directory as task_directory"
 pushd $task_directory > /dev/null
+
+if [[ ! -f task.yml ]]
+then
+    echo "task.yml does not exist on current directory."
+    exit 125
+fi
+
 readonly json_task=$(yq eval -j -I=0 ./task.yml)
 readonly pkg_name=$(echo $json_task | jq -rc '.name')
 readonly pkg_version=$(echo $json_task | jq -rc '.version')
