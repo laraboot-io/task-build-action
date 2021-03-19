@@ -11,7 +11,7 @@ echo "DIR = $DIR"
 time=$(date)
 echo "::set-output name=time::$time"
 
-readonly task_directory=$(dirname "$2")
+readonly task_directory="$BUILDER_WORKBENCH/$2"
 
 
 # 1)
