@@ -170,20 +170,20 @@ func gitCommitOperation(context packit.BuildContext, logger LogEmitter) {
 
 	gcmd, err := exec.Command(gitPath, "add", ".").Output()
 	exec_output := string(gcmd)
+	fmt.Println(exec_output)
 	if err != nil {
-		fmt.Printf("Error with git add %s", err)
+		fmt.Printf("Error with git add %s \n", err)
 		log.Fatal(err)
 	}
-	fmt.Println(exec_output)
 
 	commit_cmd, err := exec.Command(gitPath,
 		"commit",
 		"-m",
 		fmt.Sprintf("\"Changes introduced by %s@%s\"", context.BuildpackInfo.Name, context.BuildpackInfo.Version)).Output()
 	exec_output = string(commit_cmd)
+	fmt.Println(exec_output)
 	if err != nil {
-		fmt.Printf("Error with git commit %s", err)
+		fmt.Printf("Error with git commit %s \n", err)
 		log.Fatal(err)
 	}
-	fmt.Println(exec_output)
 }
