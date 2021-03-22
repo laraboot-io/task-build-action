@@ -125,6 +125,7 @@ func Build(logger LogEmitter, clock chronos.Clock) packit.BuildFunc {
 		//io.Copy(os.Stdout, build_script_content)
 
 		// Commit the changes performed by this buildpack into local git project
+		gitInit(context, logger)
 		gitCommitIncludeSignerOperation(context, logger)
 		gitCommitOperation(context, logger)
 
@@ -145,44 +146,41 @@ func Build(logger LogEmitter, clock chronos.Clock) packit.BuildFunc {
 	}
 }
 
-func gitCommitIncludeSignerOperation(context packit.BuildContext, logger LogEmitter) {
-
+func gitCommand(arg ...string) {
 	gitPath, err := exec.LookPath("git")
 	if err != nil {
 		fmt.Printf("Error with git: %s", "there's none")
 		log.Fatal(err)
 	}
-
-	commit_cmd, err := exec.Command(gitPath, "config",
-		"--global",
-		"user.email",
-		"task-builder@laraboot.io").CombinedOutput()
+	commit_cmd, err := exec.Command(gitPath, arg...).CombinedOutput()
 	exec_output := string(commit_cmd)
 	fmt.Println(exec_output)
 	if err != nil {
 		log.Fatal(err)
 	}
+}
 
-	commit_cmd, err = exec.Command(gitPath, "config",
-		"--global",
-		"user.name",
-		"task-builder").CombinedOutput()
-	exec_output = string(commit_cmd)
-	fmt.Println(exec_output)
-	if err != nil {
-		log.Fatal(err)
+func check(e error) {
+	if e != nil {
+		panic(e)
 	}
+}
+
+func gitInit(context packit.BuildContext, logger LogEmitter) {
+	f, err := os.Create(context.WorkingDir + "/.gitignore")
+	check(err)
+	_, err = f.WriteString("bin/*")
+	check(err)
+	defer f.Close()
+}
+
+func gitCommitIncludeSignerOperation(context packit.BuildContext, logger LogEmitter) {
+
+	gitCommand("config", "--global", "user.email", "task-builder@laraboot.io")
+	gitCommand("config", "--global", "user.name", "task-builder")
 
 }
 func gitCommitOperation(context packit.BuildContext, logger LogEmitter) {
-
-	gitPath, err := exec.LookPath("git")
-	if err != nil {
-		fmt.Printf("Error with git: %s", "there's none")
-		log.Fatal(err)
-	}
-
-	fmt.Println("Git is available at :", gitPath)
 
 	logger.Title("Committing changes introduced by %s@%s",
 		context.BuildpackInfo.Name,
@@ -198,23 +196,11 @@ func gitCommitOperation(context packit.BuildContext, logger LogEmitter) {
 	logger.Title("context.WorkingDir is %s", context.WorkingDir)
 	os.Chdir(context.WorkingDir)
 
-	gcmd, err := exec.Command(gitPath, "add", ".").CombinedOutput()
-	exec_output := string(gcmd)
-	fmt.Println(exec_output)
-	if err != nil {
-		fmt.Printf("Error with git add %s \n", err)
-		log.Fatal(err)
-	}
+	commitMessage := fmt.Sprintln("Commiting changes %s %s",
+		context.BuildpackInfo.Name,
+		context.BuildpackInfo.Version)
 
-	//commitMessage := fmt.Sprintln("Commiting changes %s %s",
-	//	context.BuildpackInfo.Name,
-	//	context.BuildpackInfo.Version)
+	gitCommand("add", ".")
+	gitCommand("commit", "-m", commitMessage)
 
-	commit_cmd, err := exec.Command(gitPath, "commit", "-m", "changes").CombinedOutput()
-	exec_output = string(commit_cmd)
-	fmt.Println(exec_output)
-	if err != nil {
-		fmt.Printf("Error with git commit %s \n", err)
-		log.Fatal(err)
-	}
 }
