@@ -146,6 +146,14 @@ func Build(logger LogEmitter, clock chronos.Clock) packit.BuildFunc {
 
 func gitCommitOperation(context packit.BuildContext, logger LogEmitter) {
 
+	gitPath, err := exec.LookPath("git")
+	if err != nil {
+		fmt.Printf("Error with git: %s", "there's none")
+		log.Fatal(err)
+	}
+
+	fmt.Println("Git is available at :", gitPath)
+
 	logger.Title("Committing changes introduced by %s@%s",
 		context.BuildpackInfo.Name,
 		context.BuildpackInfo.Version)
@@ -160,7 +168,7 @@ func gitCommitOperation(context packit.BuildContext, logger LogEmitter) {
 	logger.Title("context.WorkingDir is %s", context.WorkingDir)
 	os.Chdir(context.WorkingDir)
 
-	gcmd, err := exec.Command("git", "add", ".").Output()
+	gcmd, err := exec.Command(gitPath, "add", ".").Output()
 	exec_output := string(gcmd)
 	if err != nil {
 		fmt.Printf("Error with git add %s", err)
@@ -168,10 +176,10 @@ func gitCommitOperation(context packit.BuildContext, logger LogEmitter) {
 	}
 	fmt.Println(exec_output)
 
-	commit_cmd, err := exec.Command("git",
+	commit_cmd, err := exec.Command(gitPath,
 		"commit",
 		"-m",
-		fmt.Sprintf("'Changes introduced by %s@%s'", context.BuildpackInfo.Name, context.BuildpackInfo.Version)).Output()
+		fmt.Sprintf("\"Changes introduced by %s@%s\"", context.BuildpackInfo.Name, context.BuildpackInfo.Version)).Output()
 	exec_output = string(commit_cmd)
 	if err != nil {
 		fmt.Printf("Error with git commit %s", err)
