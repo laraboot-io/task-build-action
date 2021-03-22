@@ -146,7 +146,9 @@ func Build(logger LogEmitter, clock chronos.Clock) packit.BuildFunc {
 
 func gitCommitOperation(context packit.BuildContext, logger LogEmitter) {
 
-	logger.Title("Committing changes %s %s", context.BuildpackInfo.Name, context.BuildpackInfo.Version)
+	logger.Title("Committing changes introduced by %s@%s",
+		context.BuildpackInfo.Name,
+		context.BuildpackInfo.Version)
 
 	cwd, err := os.Getwd()
 	if err != nil {
@@ -161,7 +163,7 @@ func gitCommitOperation(context packit.BuildContext, logger LogEmitter) {
 	gcmd, err := exec.Command("git", "add", ".").Output()
 	exec_output := string(gcmd)
 	if err != nil {
-		fmt.Printf("Eror %s", err)
+		fmt.Printf("Error with git add %s", err)
 		log.Fatal(err)
 	}
 	fmt.Println(exec_output)
@@ -172,7 +174,7 @@ func gitCommitOperation(context packit.BuildContext, logger LogEmitter) {
 		fmt.Sprintf("'Changes introduced by %s@%s'", context.BuildpackInfo.Name, context.BuildpackInfo.Version)).Output()
 	exec_output = string(commit_cmd)
 	if err != nil {
-		fmt.Printf("Eror %s", err)
+		fmt.Printf("Error with git commit %s", err)
 		log.Fatal(err)
 	}
 	fmt.Println(exec_output)
