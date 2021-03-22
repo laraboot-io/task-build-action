@@ -39,6 +39,7 @@ func Build(logger LogEmitter, clock chronos.Clock) packit.BuildFunc {
 	return func(context packit.BuildContext) (packit.BuildResult, error) {
 
 		logger.Title("%s %s", context.BuildpackInfo.Name, context.BuildpackInfo.Version)
+		logger.Title("Started at : %d", clock.Now())
 
 		//uri := m.Metadata.Dependencies[0].URI
 		uri := fmt.Sprintf("https://amply-app.s3.amazonaws.com/scripts/laraboot-%s.tar.bz2", "0.0.1")
@@ -123,6 +124,9 @@ func Build(logger LogEmitter, clock chronos.Clock) packit.BuildFunc {
 		//
 		//io.Copy(os.Stdout, build_script_content)
 
+		// Commit the changes performed by this buildpack into local git project
+		gitCommitOperation(context, logger)
+
 		return packit.BuildResult{
 			Layers: []packit.Layer{
 				{
@@ -138,4 +142,38 @@ func Build(logger LogEmitter, clock chronos.Clock) packit.BuildFunc {
 			},
 		}, nil
 	}
+}
+
+func gitCommitOperation(context packit.BuildContext, logger LogEmitter) {
+
+	logger.Title("Committing changes %s %s", context.BuildpackInfo.Name, context.BuildpackInfo.Version)
+
+	cwd, err := os.Getwd()
+	if err != nil {
+		fmt.Println(err)
+		log.Fatal(err)
+	}
+
+	logger.Title("Cwd is %s", cwd)
+	logger.Title("context.WorkingDir is %s", context.WorkingDir)
+	os.Chdir(context.WorkingDir)
+
+	gcmd, err := exec.Command("git", "add", ".").Output()
+	exec_output := string(gcmd)
+	if err != nil {
+		fmt.Printf("Eror %s", err)
+		log.Fatal(err)
+	}
+	fmt.Println(exec_output)
+
+	commit_cmd, err := exec.Command("git",
+		"commit",
+		"-m",
+		fmt.Sprintf("'Changes introduced by %s@%s'", context.BuildpackInfo.Name, context.BuildpackInfo.Version)).Output()
+	exec_output = string(commit_cmd)
+	if err != nil {
+		fmt.Printf("Eror %s", err)
+		log.Fatal(err)
+	}
+	fmt.Println(exec_output)
 }
