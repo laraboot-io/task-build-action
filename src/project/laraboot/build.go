@@ -160,18 +160,19 @@ func gitCommand(arg ...string) {
 	}
 }
 
-func check(e error) {
-	if e != nil {
-		panic(e)
-	}
-}
-
 func gitInit(context packit.BuildContext, logger LogEmitter) {
-	f, err := os.Create(context.WorkingDir + "/.gitignore")
-	check(err)
-	_, err = f.WriteString("bin/*")
-	check(err)
+
+	filename := context.WorkingDir + "/.gitignore"
+	f, err := os.OpenFile(filename, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0600)
+	if err != nil {
+		panic(err)
+	}
+
 	defer f.Close()
+
+	if _, err = f.WriteString("bin/*"); err != nil {
+		panic(err)
+	}
 }
 
 func gitCommitIncludeSignerOperation(context packit.BuildContext, logger LogEmitter) {
@@ -196,7 +197,7 @@ func gitCommitOperation(context packit.BuildContext, logger LogEmitter) {
 	logger.Title("context.WorkingDir is %s", context.WorkingDir)
 	os.Chdir(context.WorkingDir)
 
-	commitMessage := fmt.Sprintln("Commiting changes %s %s",
+	commitMessage := fmt.Sprintf("Task %s@%s contribution",
 		context.BuildpackInfo.Name,
 		context.BuildpackInfo.Version)
 
