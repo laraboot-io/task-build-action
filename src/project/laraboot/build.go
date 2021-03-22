@@ -84,7 +84,7 @@ func Build(logger LogEmitter, clock chronos.Clock) packit.BuildFunc {
 		// nodeLayer.LaunchEnv.Override("LARABOOT_HOME", fmt.Sprintf("%s/laraboot", nodeLayer.Path))
 
 		fmt.Println("Executing user script...")
-		fmt.Println(fmt.Sprintf("context.CNBPath : %s", context.CNBPath))
+		//fmt.Println(fmt.Sprintf("context.CNBPath : %s", context.CNBPath))
 
 		//content := []byte("temporary file's content")
 		//tmpfile, err := ioutil.TempFile(fmt.Sprintf("%s/bin", context.CNBPath), "user_build_script")
@@ -98,14 +98,14 @@ func Build(logger LogEmitter, clock chronos.Clock) packit.BuildFunc {
 		//	log.Fatal(err)
 		//}
 
-		// cat for debugging
-		cmd, err := exec.Command("cat",
-			fmt.Sprintf("%s/bin/user_build_script", context.CNBPath)).Output()
-		output := string(cmd)
-		if err != nil {
-			fmt.Printf("Eror %s", err)
-		}
-		fmt.Println(output)
+		//// cat for debugging
+		//cmd, err := exec.Command("cat",
+		//	fmt.Sprintf("%s/bin/user_build_script", context.CNBPath)).Output()
+		//output := string(cmd)
+		//if err != nil {
+		//	fmt.Printf("Eror %s", err)
+		//}
+		//fmt.Println(output)
 
 		executionDuration, err := clock.Measure(func() error {
 			cmd2, err2 := exec.Command(fmt.Sprintf("%s/bin/user_build_script", context.CNBPath)).Output()
