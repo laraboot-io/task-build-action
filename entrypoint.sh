@@ -119,5 +119,5 @@ cp -r $BUILDER_HOME/bin/* ./bin
 chmod -R +x ./bin
 cat buildpack.toml
 cat package.toml
-pack buildpack package my-task --config package.toml
+pack buildpack package $pkg_name --config package.toml
 popd
