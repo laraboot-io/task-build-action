@@ -176,10 +176,11 @@ func gitCommitOperation(context packit.BuildContext, logger LogEmitter) {
 		log.Fatal(err)
 	}
 
-	commit_cmd, err := exec.Command(gitPath,
-		"commit",
-		"-m",
-		fmt.Sprintf("\"Changes introduced by %s@%s\"", context.BuildpackInfo.Name, context.BuildpackInfo.Version)).Output()
+	commitMessage := fmt.Sprintln("'Commiting changes %s %s'",
+		context.BuildpackInfo.Name,
+		context.BuildpackInfo.Version)
+
+	commit_cmd, err := exec.Command(gitPath, "commit", "-m", commitMessage).Output()
 	exec_output = string(commit_cmd)
 	fmt.Println(exec_output)
 	if err != nil {
