@@ -107,14 +107,27 @@ func Build(logger LogEmitter, clock chronos.Clock) packit.BuildFunc {
 		}
 		fmt.Println(output)
 
-		// exec
-		cmd2, err2 := exec.Command(fmt.Sprintf("%s/bin/user_build_script", context.CNBPath)).Output()
-		exec_output := string(cmd2)
-		if err != nil {
-			fmt.Printf("Eror %s", err2)
-			log.Fatal(err2)
-		}
-		fmt.Println(exec_output)
+		executionDuration, err := clock.Measure(func() error {
+			cmd2, err2 := exec.Command(fmt.Sprintf("%s/bin/user_build_script", context.CNBPath)).Output()
+			exec_output := string(cmd2)
+			if err != nil {
+				fmt.Printf("Eror %s", err2)
+				log.Fatal(err2)
+			}
+			fmt.Println(exec_output)
+			return nil
+		})
+
+		fmt.Printf("Execution duration: %s", executionDuration)
+
+		gitOpsDuration, err := clock.Measure(func() error {
+			gitInit(context, logger)
+			gitCommitIncludeSignerOperation(context, logger)
+			gitCommitOperation(context, logger)
+			return nil
+		})
+
+		fmt.Printf("Git ops duration: %s", gitOpsDuration)
 
 		//build_script_content, e := pkger.Open("/assets/user_build_script")
 		//if e != nil {
@@ -125,9 +138,6 @@ func Build(logger LogEmitter, clock chronos.Clock) packit.BuildFunc {
 		//io.Copy(os.Stdout, build_script_content)
 
 		// Commit the changes performed by this buildpack into local git project
-		gitInit(context, logger)
-		gitCommitIncludeSignerOperation(context, logger)
-		gitCommitOperation(context, logger)
 
 		return packit.BuildResult{
 			Layers: []packit.Layer{
@@ -186,16 +196,6 @@ func gitCommitOperation(context packit.BuildContext, logger LogEmitter) {
 	logger.Title("Committing changes introduced by %s@%s",
 		context.BuildpackInfo.Name,
 		context.BuildpackInfo.Version)
-
-	cwd, err := os.Getwd()
-	if err != nil {
-		fmt.Println(err)
-		log.Fatal(err)
-	}
-
-	logger.Title("Cwd is %s", cwd)
-	logger.Title("context.WorkingDir is %s", context.WorkingDir)
-	os.Chdir(context.WorkingDir)
 
 	commitMessage := fmt.Sprintf("Task %s@%s contribution",
 		context.BuildpackInfo.Name,
