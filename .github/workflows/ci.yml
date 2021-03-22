@@ -94,12 +94,12 @@ jobs:
           sudo chmod +x /usr/bin/yq
       - name: Test the task
         run: |
-          readonly yml_task=$(yq eval -j -I=0 ./examples/sample-app/task.yml)
+          readonly yml_task=$(yq eval -j -I=0 ./examples/noops-task/task.yml)
           readonly task_name=$(echo $yml_task | jq -rc '.name')
           (curl -sSL "https://github.com/buildpacks/pack/releases/download/v0.17.0/pack-v0.17.0-linux.tgz" | sudo tar -C /usr/local/bin/ --no-same-owner -xzv pack)
           pack config default-builder paketobuildpacks/builder:full
           pack build check-app \
-          --path ./examples/sample-app \
+          --path ./examples/noops-task \
           --buildpack gcr.io/paketo-buildpacks/php-dist \
           --buildpack docker://$task_name \
           --clear-cache --verbose
