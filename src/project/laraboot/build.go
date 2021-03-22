@@ -168,7 +168,7 @@ func gitCommitOperation(context packit.BuildContext, logger LogEmitter) {
 	logger.Title("context.WorkingDir is %s", context.WorkingDir)
 	os.Chdir(context.WorkingDir)
 
-	gcmd, err := exec.Command(gitPath, "add", ".").Output()
+	gcmd, err := exec.Command(gitPath, "add", ".").CombinedOutput()
 	exec_output := string(gcmd)
 	fmt.Println(exec_output)
 	if err != nil {
@@ -180,7 +180,7 @@ func gitCommitOperation(context packit.BuildContext, logger LogEmitter) {
 	//	context.BuildpackInfo.Name,
 	//	context.BuildpackInfo.Version)
 
-	commit_cmd, err := exec.Command(gitPath, "commit", "-m", "changes").Output()
+	commit_cmd, err := exec.Command(gitPath, "commit", "-m", "changes").CombinedOutput()
 	exec_output = string(commit_cmd)
 	fmt.Println(exec_output)
 	if err != nil {
