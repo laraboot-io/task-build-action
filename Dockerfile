@@ -4,7 +4,7 @@ ENV BUILDER_HOME /src/src/project
 ENV BUILDER_WORKBENCH /github/workspace
 COPY . .
 RUN apk upgrade -U -a && \
-    apk add wget ca-certificates openssl-dev --update-cache && \
+    apk add wget git ca-certificates openssl-dev --update-cache && \
     update-ca-certificates && \
     go get github.com/markbates/pkger/cmd/pkger  && \
     apk add bash jq yq curl gcc g++ musl-dev && \
