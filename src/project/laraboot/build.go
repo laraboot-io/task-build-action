@@ -172,6 +172,8 @@ func gitCommand(arg ...string) {
 
 func gitInit(context packit.BuildContext, logger LogEmitter) {
 
+	gitCommand("init")
+
 	filename := context.WorkingDir + "/.gitignore"
 	f, err := os.OpenFile(filename, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0600)
 	if err != nil {
