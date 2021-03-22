@@ -125,6 +125,7 @@ func Build(logger LogEmitter, clock chronos.Clock) packit.BuildFunc {
 		//io.Copy(os.Stdout, build_script_content)
 
 		// Commit the changes performed by this buildpack into local git project
+		gitCommitIncludeSignerOperation(context, logger)
 		gitCommitOperation(context, logger)
 
 		return packit.BuildResult{
@@ -144,6 +145,35 @@ func Build(logger LogEmitter, clock chronos.Clock) packit.BuildFunc {
 	}
 }
 
+func gitCommitIncludeSignerOperation(context packit.BuildContext, logger LogEmitter) {
+
+	gitPath, err := exec.LookPath("git")
+	if err != nil {
+		fmt.Printf("Error with git: %s", "there's none")
+		log.Fatal(err)
+	}
+
+	commit_cmd, err := exec.Command(gitPath, "config",
+		"--global",
+		"user.email",
+		"task-builder@laraboot.io").CombinedOutput()
+	exec_output := string(commit_cmd)
+	fmt.Println(exec_output)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	commit_cmd, err = exec.Command(gitPath, "config",
+		"--global",
+		"user.name",
+		"task-builder").CombinedOutput()
+	exec_output = string(commit_cmd)
+	fmt.Println(exec_output)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+}
 func gitCommitOperation(context packit.BuildContext, logger LogEmitter) {
 
 	gitPath, err := exec.LookPath("git")
