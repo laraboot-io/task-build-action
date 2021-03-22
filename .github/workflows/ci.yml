@@ -14,7 +14,7 @@ jobs:
     strategy:
       matrix:
         app:
-          - sample-app
+          - noops-task
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -27,6 +27,8 @@ jobs:
       - name: Get Pack
         run: |
           (curl -sSL "https://github.com/buildpacks/pack/releases/download/v0.17.0/pack-v0.17.0-linux.tgz" | sudo tar -C /usr/local/bin/ --no-same-owner -xzv pack)
+          wget -4 https://github.com/mikefarah/yq/releases/download/v4.2.0/yq_linux_amd64 -O /usr/bin/yq
+          sudo chmod +x /usr/bin/yq
       - uses: actions/setup-go@v2
         with:
           go-version: '^1.16'
@@ -43,10 +45,12 @@ jobs:
               if [ -d "$d" ]; then
                 pushd $d
                 echo "$d"
+                readonly yml_task=$(yq eval -j -I=0 ./task.yml)
+                readonly task_name=$(echo $yml_task | jq -rc '.name')
                 if [ ! -f ".git/config" ]; then
                   git init
                   git config --global user.email "test@example.com"
-                  git config --global user.name "TaskBuilder"
+                  git config --global user.name "task-builder"
                 fi
                 docker run \
                   -e BUILDER_WORKBENCH=/github/workspace \
@@ -55,11 +59,11 @@ jobs:
                   -i task-builder \
                   arg0 .
                   docker images
-                  pack inspect-buildpack my-task
+                  pack inspect-buildpack $task_name
                   pack build check-app \
                   --path . \
                   --buildpack gcr.io/paketo-buildpacks/php-dist \
-                  --buildpack docker://my-task \
+                  --buildpack docker://$task_name \
                   --clear-cache --verbose
                   # clean up
                   sudo rm -rf dist
@@ -83,7 +87,7 @@ jobs:
         uses: ./ # Uses an action
         with:
           arg0: 'arg0'
-          directory: ./examples/sample-app
+          directory: ./examples/noops-task
       - name: Yq
         run: |
           wget -4 https://github.com/mikefarah/yq/releases/download/v4.2.0/yq_linux_amd64 -O /usr/bin/yq

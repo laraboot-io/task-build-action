@@ -1,6 +1,6 @@
 # task.yml
 version: "0.0.2"
-name: 'MyTask'
+name: 'noops-task'
 description: 'No ops task'
 requires:
   php : 7.4.*
