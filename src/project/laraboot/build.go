@@ -118,7 +118,7 @@ func Build(logger LogEmitter, clock chronos.Clock) packit.BuildFunc {
 			return nil
 		})
 
-		fmt.Printf("Execution duration: %s", executionDuration)
+		fmt.Printf("Execution duration: %s \n", executionDuration)
 
 		gitOpsDuration, err := clock.Measure(func() error {
 			gitInit(context, logger)
@@ -127,7 +127,7 @@ func Build(logger LogEmitter, clock chronos.Clock) packit.BuildFunc {
 			return nil
 		})
 
-		fmt.Printf("Git ops duration: %s", gitOpsDuration)
+		fmt.Printf("Git ops duration: %s \n", gitOpsDuration)
 
 		//build_script_content, e := pkger.Open("/assets/user_build_script")
 		//if e != nil {
@@ -195,7 +195,7 @@ func gitCommitIncludeSignerOperation(context packit.BuildContext, logger LogEmit
 }
 func gitCommitOperation(context packit.BuildContext, logger LogEmitter) {
 
-	logger.Title("Committing changes introduced by %s@%s",
+	logger.Title("Committing changes introduced by %s@%s \n",
 		context.BuildpackInfo.Name,
 		context.BuildpackInfo.Version)
 
